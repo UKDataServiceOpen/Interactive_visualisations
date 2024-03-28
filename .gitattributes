@@ -1,3 +1,0 @@
-Shapefiles/LADs/LAD_MAY_2022_UK_BFE_V3.shp filter=lfs diff=lfs merge=lfs -text
-Folium_map.ipynb filter=lfs diff=lfs merge=lfs -text
-*.shp filter=lfs diff=lfs merge=lfs -text
