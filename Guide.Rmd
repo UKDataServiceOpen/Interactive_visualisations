@@ -1,0 +1,214 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+## Install packages
+
+```{r}
+# install.packages("readr")
+# install.packages("dplyr")
+# install.packages("stringr")
+# install.packages("shiny")
+# install.packages("ggplot2")
+# install.packages("plotly")
+```
+
+## Load in packages
+
+```{r}
+# Allows us to read-in csv files
+library(readr) 
+# For data manipulation
+library(dplyr) 
+# For regular expression operations 
+library(stringr) 
+# library(shiny)
+library(ggplot2)
+# Used tp create interactive visualisations
+library(plotly)
+```
+## Load-in dataset
+
+```{r}
+df <- read_csv('Data/GI_age.csv')
+```
+```{r}
+# Brief glimpse of data structure
+# But can also click on the dataset in the Environment pane
+head(df, 10)
+```
+
+```{r}
+# Let's check out the dimensions
+
+dim(df)
+```
+
+## Data Cleaning
+
+```{r}
+# str_replace_all() method finds all substrings which match the regex and replaces them with empty string
+# First, let's replace any brackets with empty strings
+colnames(df) <- str_replace_all(colnames(df), "\\s*\\([^)]*\\)", "")
+
+# Lowercase column text and replace empty spaces with "_"
+colnames(df) <- tolower(colnames(df))
+colnames(df) <- str_replace_all(colnames(df), " ", "_")
+
+# Let's see if it worked..
+head(df)
+```
+
+### Pipes and other operators..
+
+So, we've already come across the assignment operator '<-' which is used to assign a value. E.g. df <- read_csv('Data/GI_age.csv'), here we assign our csv file to a dataframe variable called 'df'.
+
+But, we're now going to encounter the pipe operator '%>%' which can seem intimidating at first but is actually pretty simple. It's used to pass the result of one function directly into the next function. E.g. df <- df %>% filter(gender_identity_code != -8), here we start with our df and pass it to the filter function using the pipe operator. This basically supplies the filter() function with its first argument, which is the dataframe to filter on. And here we encounter a logical operator '!=' within the filter() function, which specifies that we should only keep rows where gender_identity_code is not equal to -8. 
+
+```{r}
+# Get rid of columns with 0 observations
+df <- df %>% 
+  filter(gender_identity_code != -8) 
+
+# Check it worked
+
+head(df, 10)
+```
+
+```{r}
+# Get rid of redundant age category
+# Further filter data
+df <- df %>%
+  filter(age_code != 1)
+
+```
+
+```{r}
+# Clean up the values in the 'age' column. Let's shorten them.
+
+# Chain str_replace() calls together to apply multiple string replacements in succession
+# Each str_replace() call is applied to the result of the previous one
+df$age <- df$age %>%
+  str_replace('Aged ', '') %>%
+  str_replace('to', '-') %>%
+  str_replace('years', '') %>%
+  str_replace('and over', '+')
+
+# We can pass our df to the select function, where we specify the column we're interested in.
+# Then, we pipe the output to the head function.
+df %>%
+  select(age) %>%
+  head()
+```
+
+## Question
+
+How is gender identity distributed among different age groups?
+
+Some subquestions that this can help us answer:
+
+* What % of trans men are aged 16-24 years?
+* Are older age groups overrepresented in the 'non-response' category?
+
+## Data pre-processing
+
+### Calculate percentages 
+
+Below, we use the group_by function to group the data by 'gender_identity' and calculate the percentage within each group. Then the mutate() function adds a new column 'percentage' to df, which (for each group) divides the observation by the sum of observations, multiplies it by 100, and rounds it up to 2 decimal points. We then use the ungroup function when we're done with the grouping operation. 
+
+```{r}
+df <- df %>%
+  group_by(gender_identity) %>%
+  mutate(percentage = round((observation / sum(observation) * 100), 2)) %>%
+  ungroup()
+
+head(df)
+```
+
+## Interactive grouped bar chart + stacked bar chart
+
+So, the convention when using Plotly in R, is to create our plot first by using the ggplot2 package. Then, we convert the ggplot object to a 'plotly' object using 'ggplotly'. There's a lot going on here so I'll break some of it down. The ggplot() function initialises a ggplot object, which sets up the dataframe that will be used for the plot and specifies the aesthetic mappings which describe how variables in the data are mapped to visual properties. So, inside aes() we specify our x and y columns, and specify that we want to map our age column to fill the colour of the bars.
+
+Meanwhile, geom_bar() is used to make bar charts, so it adds the bar geometry to the plot. And we set stat to 'identity', which tells 'ggplot' to use the value in the y-axis column ('percentage') for the height of the bars. By setting position to 'dodge' we ensure that the bars are placed next to each other. 
+
+Finally, labs() is used to add or modify labels, and theme is used to customise non-data parts of the plot like text, legend, axes. And scale_fill_discrete() controls the colour scales and here we use the name parameter to label our legend "Age". 
+
+TLDR: we're using the + operator and ggplot functions to build upon the base ggplot object, layering on aesthetic mappings, geometries, labels, etc.
+
+```{r}
+p <- ggplot(df, aes(x = gender_identity, y = percentage, fill = age,
+                    text = paste('Observation:', observation))) +  # Include observation info
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = 'Distribution of Gender Identity Categories Among Age Groups',
+       x = 'Gender Identity', y = 'Percentage') +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_fill_discrete(name = "Age")
+
+# Let's take a look at our static graph
+p
+```
+
+Hmm okay. Not too shabby, but we're definitely going to have to do something about our x-axis labels, as right now everything is pretty cluttered. Maybe we could rotate them, or just rename them. We'll get round to it. But for now, let's make this thing interactive.
+
+```{r}
+# Convert ggplot object to a plotly object for interactivity
+fig <- ggplotly(p, tooltip = c("y", "fill", "text"))  # Specify tooltip components
+
+
+# Let's check it out
+fig
+```
+
+## Tooltips 
+
+When using different R libraries geared towards interactive visualisations, you'll often come across 'tooltips'. These are small boxes that provide information when a user hovers over a part of a data visualisation such as: a point on a graph, a bar in a bar chart, or a segment in a pie chart. They are used to display additional information about the data point or object, providing more context without cluttering up the chart. 
+
+```{r}
+# Set the levels of the factor to the order you want them to appear
+df$gender_identity <- factor(df$gender_identity, levels = c(
+  "Gender identity the same as sex registered at birth",
+  "Gender identity different from sex registered at birth but no specific identity given",
+  "Trans woman",
+  "Trans man",
+  "All other gender identities",
+  "Not answered"
+))
+
+# Generate the plotly figure
+fig <- ggplotly(p)
+
+# Specify custom tick labels with the corresponding tick values
+fig <- fig %>%
+  layout(
+    title = list(text = 'Distribution of Gender Identity Categories Among Age Groups', x = 0.5),
+    xaxis = list(
+      title = 'Gender Identity',
+      tickvals = levels(df$gender_identity),  # Set tickvals to factor levels
+      ticktext = c(
+        "Cisgender", 
+        "Gender identity different from sex",
+        "Trans woman",
+        "Trans man",
+        "All other identities",
+        "Not answered"
+      )
+    ),
+    yaxis = list(title = 'Percentage'),
+    legend = list(orientation = "v", yanchor = "top", y = -0.3, xanchor = "center", x = 1)
+  )
+
+fig
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
