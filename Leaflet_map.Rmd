@@ -1,0 +1,228 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Install packages
+
+```{r}
+# install.packages("leaflet")
+# install.packages("sf")
+# install.packages("dplyr")
+# install.packages("readr")
+```
+
+## Import libraries
+
+```{r}
+
+library(leaflet)
+library(sf)
+library(dplyr)
+library(readr)
+
+```
+## Read-in datasets
+
+```{r}
+# First, let's read in our gender identity dataset
+
+df <- read_csv('Data/GI_det.csv')
+
+# Let's check out the first few rows
+
+head(df, 10)
+```
+
+## Data Cleaning
+
+* rename columns
+* remove 'Does not apply' from gender identity category
+* rename some values in gender identity category so they aren't as wordy
+
+```{r}
+
+# Rename columns using the rename function from dplyr
+df <- df %>% 
+  rename(LA_code = `Lower tier local authorities Code`,
+         LA_name = `Lower tier local authorities`,
+         GI_code = `Gender identity (8 categories) Code`,
+         GI_cat = `Gender identity (8 categories)`)
+
+
+# Let's check out the column names
+
+colnames(df)
+```
+
+```{r}
+# To get rid of the 'Does not apply' category we can use dplyr's filter function
+# And we use a conditional '!=' to keep everything except 'Does not apply' category
+
+df <- df %>% filter(GI_cat != 'Does not apply')
+
+```
+
+```{r}
+# Unique function can be applied to a column in a df to see which values are in that column
+# 'Does not apply' has been successfully dropped
+
+unique(df$GI_cat)
+
+```
+
+```{r}
+# We can use the recode function on a column to replace values in a column
+
+df$GI_cat <- df$GI_cat %>% 
+  recode(`Gender identity the same as sex registered at birth` = "Gender identity the same as sex",
+         `Gender identity different from sex registered at birth but no specific identity given` = "Gender identity different from sex")
+
+
+# Let's see if it worked... 
+
+unique(df$GI_cat)
+```
+## Data Pre-processing
+
+Now onto the more interesting stuff. We need to calculate the % of Trans men in each local authority. Let's give it a go.
+
+```{r}
+# Calculate the percentage for each group
+df <- df %>%
+  group_by(LA_name) %>%
+  mutate(Percentage = round(Observation / sum(Observation) * 100, 2))
+
+head(df)
+```
+
+```{r}
+# Subset the dataframe to keep only the percentages of trans men
+df <- df %>% 
+  filter(GI_cat == 'Trans man') %>%
+  select(-Observation) %>% 
+  distinct() %>% 
+  ungroup()
+
+head(df)
+```
+
+## Read-in shapefile
+
+Now that we have our dataset sorted, we can start on the mapping process.
+
+```{r}
+# Now, let's read in our shapefile to a simple features object
+
+sf <- st_read('Shapefiles/LADs/LAD_MAY_2022_UK_BFE_V3.shp')
+
+```
+
+```{r}
+# Let's check it out
+head(sf)
+```
+
+```{r}
+# Inspect shape
+
+dim(sf)
+```
+
+```{r}
+# length() + unique() gives us the number of unique values in a column
+
+length(unique(sf$LAD22NM))
+```
+
+## Clean shapefile
+
+Hmm. We have 331 local authorities in our dataset that we want to plot, but there are 374 listed here. We'll need to remove the local authorities that don't match the ones in our df.
+
+* rename columns to match 'df'
+* get rid of redundant Local Authorities
+
+```{r}
+# Rename columns to match those in original df
+sf <- sf %>% 
+  rename(LA_code = LAD22CD, 
+         LA_name = LAD22NM)
+
+# Let's see if it worked
+colnames(sf)
+```
+
+```{r}
+# Replace specific values in the LA_name column
+sf$LA_name <- sf$LA_name %>% 
+  recode(`Bristol, City of` = "Bristol", 
+         `Kingston upon Hull, City of` = "Kingston upon Hull", 
+         `Herefordshire, County of` = "Herefordshire")
+```
+
+```{r}
+# Keep only matching local authorities
+sf <- sf %>% 
+  filter(LA_code %in% unique(df$LA_code))
+
+# Let's see how it looks.. 
+length(unique(sf$LA_code))
+```
+
+## Pre-process shapefile
+
+```{r}
+sf <- st_transform(sf, crs = 4326)
+```
+
+## Merge datasets
+
+What we want to do now is merge our 'df' with 'sf' so that we can directly access the data and map it!
+
+```{r}
+# Merge the dataframes
+merged <- merge(sf, df, by = c('LA_code', 'LA_name'))
+
+head(merged)
+```
+
+## Building our interactive map
+
+### Step 1: Initialise map
+
+```{r}
+
+merged$LA_code <- as.character(merged$LA_code)
+# Assuming 'merged' is your sf object and 'Percentage' is the column you want to use for coloring
+color_palette <- colorNumeric(palette = "YlGnBu", domain = merged$Percentage)
+
+uk_map <- leaflet(merged) %>%
+  setView(lng = -3.0, lat = 54.7, zoom = 6) %>%
+  addTiles() %>%
+  addPolygons(fillColor = ~color_palette(Percentage),
+              weight = 1,
+              opacity = 1,
+              color = "#000000",
+              fillOpacity = 0.7,
+              highlight = highlightOptions(weight = 2,
+                                           color = "#666",
+                                           dashArray = "",
+                                           fillOpacity = 0.7,
+                                           bringToFront = TRUE),
+              label = ~paste(LA_name, ":", Percentage, "%"),
+              labelOptions = labelOptions(style = list("font-weight" = "normal", padding = "3px 8px"),
+                                          textsize = "15px", direction = "auto")) %>%
+  addLayersControl(baseGroups = c("OSM (default)"),
+                   options = layersControlOptions(collapsed = FALSE))
+
+uk_map
+```
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
