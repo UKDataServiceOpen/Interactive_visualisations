@@ -40,6 +40,10 @@ df <- read_csv('Data/GI_age.csv')
 ```{r}
 # Brief glimpse of data structure
 # But can also click on the dataset in the Environment pane
+```
+
+
+```{r}
 head(df, 10)
 ```
 
@@ -130,6 +134,25 @@ df <- df %>%
 head(df)
 ```
 
+```{r}
+# Directly convert to a factor with the specified order
+df$gender_identity <- factor(df$gender_identity, levels = c(
+  "Gender identity the same as sex registered at birth",
+  "Gender identity different from sex registered at birth but no specific identity given",
+  "Trans woman",
+  "Trans man",
+  "All other gender identities",
+  "Not answered"
+))
+```
+
+```{r}
+# Print the levels to ensure they are correct
+print(levels(df$gender_identity))
+
+```
+
+
 ## Interactive grouped bar chart + stacked bar chart
 
 So, the convention when using Plotly in R, is to create our plot first by using the ggplot2 package. Then, we convert the ggplot object to a 'plotly' object using 'ggplotly'. There's a lot going on here so I'll break some of it down. The ggplot() function initialises a ggplot object, which sets up the dataframe that will be used for the plot and specifies the aesthetic mappings which describe how variables in the data are mapped to visual properties. So, inside aes() we specify our x and y columns, and specify that we want to map our age column to fill the colour of the bars.
@@ -157,54 +180,318 @@ Hmm okay. Not too shabby, but we're definitely going to have to do something abo
 
 ```{r}
 # Convert ggplot object to a plotly object for interactivity
-fig <- ggplotly(p, tooltip = c("y", "fill", "text"))  # Specify tooltip components
+fig <- ggplotly(p, tooltip = c("y", "fill", "text"), width = 700, height = 500)  # Specify tooltip components
 
 
 # Let's check it out
 fig
+
+```
+
+```{r}
+tickvals <- 1:length(levels(df$gender_identity))
+
+# Custom tick labels corresponding to the levels
+ticktext <- c(
+  "Cisgender", 
+  "Gender identity different from sex",
+  "Trans woman",
+  "Trans man",
+  "All other identities",
+  "Not answered"
+)
+
 ```
 
 ## Tooltips 
 
 When using different R libraries geared towards interactive visualisations, you'll often come across 'tooltips'. These are small boxes that provide information when a user hovers over a part of a data visualisation such as: a point on a graph, a bar in a bar chart, or a segment in a pie chart. They are used to display additional information about the data point or object, providing more context without cluttering up the chart. 
 
+
 ```{r}
-# Set the levels of the factor to the order you want them to appear
-df$gender_identity <- factor(df$gender_identity, levels = c(
-  "Gender identity the same as sex registered at birth",
-  "Gender identity different from sex registered at birth but no specific identity given",
-  "Trans woman",
-  "Trans man",
-  "All other gender identities",
-  "Not answered"
-))
-
-# Generate the plotly figure
-fig <- ggplotly(p)
-
 # Specify custom tick labels with the corresponding tick values
 fig <- fig %>%
   layout(
     title = list(text = 'Distribution of Gender Identity Categories Among Age Groups', x = 0.5),
     xaxis = list(
-      title = 'Gender Identity',
-      tickvals = levels(df$gender_identity),  # Set tickvals to factor levels
-      ticktext = c(
-        "Cisgender", 
-        "Gender identity different from sex",
-        "Trans woman",
-        "Trans man",
-        "All other identities",
-        "Not answered"
-      )
+      title = list('Gender Identity',
+      standoff = 15),
+      tickmode = "array",
+      tickvals = tickvals,
+      ticktext = ticktext,
+      tickangle = -45
     ),
-    yaxis = list(title = 'Percentage'),
-    legend = list(orientation = "v", yanchor = "top", y = -0.3, xanchor = "center", x = 1)
-  )
+    yaxis = list(title = list('Percentage',
+                 standoff = 25)))
 
 fig
 ```
 
+## Dataset 2
+
+```{r}
+# Load in dataset
+df2 <- read_csv('Data/GI_ethnic.csv')
+```
+```{r}
+# Brief glimpse at underlying data structure
+head(df2, 10)
+```
+
+```{r}
+# Remove all text within parentheses from column names and replace it with an empty string
+
+# tilde operator (~) used to apply function 'gsub' to each colname
+# .x represents each colname that gsub will be applied to
+df2 <- df2 %>% 
+  rename_with(~ gsub("\\s*\\([^)]*\\)", "", .x))
+```
+
+```{r}
+# Lowercase all text in column names and replace spaces with underscores
+df2 <- df2 %>% 
+  rename_with(~ tolower(gsub(" ", "_", .x)))
+```
+
+```{r}
+# Shorten the local authority column names as they are way too long
+df2 <- df2 %>% 
+  rename(LA_code = lower_tier_local_authorities_code,
+         LA_name = lower_tier_local_authorities)
+
+```
+
+```{r}
+# Let's see if it worked
+colnames(df2)
+```
+```{r}
+# Remove 'Does not apply' categories for the gender identity and ethnic group columns
+df2 <- df2 %>% 
+  filter(gender_identity_code != -8, ethnic_group_code != -8)
+```
+
+```{r}
+# Display the first 30 rows
+head(df2, 30)
+```
+
+## Data pre-processing
+
+### Calculate % of each ethnic group in each LA
+
+```{r}
+# First, we're going to group our data by LA_name, Ethnic group, and sum our observations
+# This leaves us with the total of each ethnic group in each local authority
+ethnic_totals <- df2 %>%
+  group_by(LA_name, ethnic_group) %>%
+  summarise(Ethnic_sum = sum(observation, na.rm = TRUE)) %>%
+  ungroup()
+
+# Print the first few rows to check
+head(ethnic_totals)
+```
+```{r}
+# Calculate total observations for each local authority
+la_totals <- df2 %>%
+  group_by(LA_name) %>%
+  summarise(LA_sum = sum(observation, na.rm = TRUE)) %>%
+  ungroup()
+
+# Print the first few rows to check
+head(la_totals)
+```
+
+```{r}
+# Merge the summed ethnic group data with the total LA observations to calculate percentage of each ethnic group in each LA
+merged <- merge(ethnic_totals, la_totals, by = "LA_name")
+```
+
+```{r}
+# Calculate the percentage of each ethnic group within each local authority
+merged <- merged %>%
+  mutate(Percentage = round((Ethnic_sum / LA_sum * 100), 2))
+```
+
+
+```{r}
+# Print the first few rows to check
+head(merged, 10)
+```
+
+### Calculate Non-Response Rates Within LAs
+
+```{r}
+# Now calculate the non-response % for each ethnic group in each LA
+# This involves grouping by LA_name, ethnic_group, and summing observations again
+ethnic_group_totals <- df2 %>%
+  group_by(LA_name, ethnic_group) %>%
+  summarise(Ethnic_group_total = sum(observation, na.rm = TRUE)) %>%
+  ungroup()
+```
+
+```{r}
+# This is the sum of non-responses for each ethnic group within each LA
+non_response_totals <- df2 %>%
+  filter(gender_identity == 'Not answered') %>%
+  group_by(LA_name, ethnic_group) %>%
+  summarise(Non_response_total = sum(observation, na.rm = TRUE)) %>%
+  ungroup()
+```
+
+```{r}
+head(non_response_totals)
+```
+```{r}
+# Merge the totals with the non-response totals
+merged_data <- merge(ethnic_group_totals, non_response_totals, by = c("LA_name", "ethnic_group"), all.x = TRUE)
+
+
+head(merged_data)
+```
+
+```{r}
+# Calculate the non-response percentage for each ethnic group within each LA
+merged_data <- merged_data %>%
+  mutate(Eth_NR_Perc = round((Non_response_total / Ethnic_group_total * 100), 2))
+```
+
+
+```{r}
+head(merged_data)
+```
+
+```{r}
+# Merge the non-response data with the percentage of each ethnic group within each LA
+nr <- merge(merged_data, select(merged, LA_name, ethnic_group, Percentage), by = c("LA_name", "ethnic_group"))
+
+head(nr)
+```
+
+## Interactive scatterplot
+
+In this section we're going to:
+
+1. Create a simple scatterplot exploring the relationship between the percentage of asian citizens within local authorities and their non-response rates
+
+2. Implement a widget to update our scatterplot
+
+```{r}
+# Subset dataframe so we only have responses from the asian ethnic group
+
+asian <- nr %>%
+  filter(ethnic_group == 'Asian, Asian British or Asian Welsh')
+
+head(asian)
+```
+
+```{r}
+# Initialize figure
+fig <- plot_ly(data = asian,
+               x = ~Percentage,
+               y = ~Eth_NR_Perc,
+               text = ~paste('LA Name:', LA_name, 
+                             '<br>Percentage:', sprintf("%.2f", Percentage),
+                             '<br>Non-response Rate:', sprintf("%.2f%%", Eth_NR_Perc),
+                             '<br>Non-response Total:', Non_response_total,
+                             '<br>Ethnic Group Total:', Ethnic_group_total),
+               hoverinfo = "text",
+               mode = 'markers',  # Specify marker points
+               type = 'scatter',  # Graph type - scatterplot
+               name = 'Asian')  # Default visible graph
+
+
+# Customize layout 
+fig <- fig %>%
+  layout(title = 'Non-Response Rates of the Asian Ethnic Group Across Local Authorities',
+         xaxis = list(title = 'Percentage of Ethnic Group'),
+         yaxis = list(title = 'Non-response Rate'),
+         width = 900,
+         height = 900)
+
+# Show the plot
+fig
+```
+
+## Dropdown selection
+
+What we're going to do now, is use Plotly's 'updatemenus' in conjunction with the 'update' method to create a dropdown where we can switch between the Asian ethnic group, and White. 
+
+### Step 1: Initialise figure and add traces
+
+We'll start by creating a plot_ly figure. We use plotly figures here instead of ggplotly, because plot_ly objects offer more control over how plots are constructed. It allows us to add 'traces', which refer to a set of data. In our example, we want to add a trace with the data points relating to our asian ethnic group, and another one for our white ethnic group. This will start to make sense when we look at the code below. 
+
+```{r}
+# Initialize a Plotly figure
+fig <- plot_ly()
+
+fig
+
+```
+
+```{r}
+# Add trace for the Asian ethnic group
+fig <- fig %>% add_trace(
+  data = nr[nr$ethnic_group == 'Asian, Asian British or Asian Welsh',],
+  x = ~Percentage,
+  y = ~Eth_NR_Perc,
+  text = ~paste('LA Name:', LA_name),
+  type = 'scatter',
+  mode = 'markers',
+  name = 'Asian',
+  hoverinfo = 'text+x+y',
+  visible = T
+)
+
+# Add trace for the White ethnic group
+fig <- fig %>% add_trace(
+  data = nr[nr$ethnic_group == 'White: English, Welsh, Scottish, Northern Irish or British',],
+  x = ~Percentage,
+  y = ~Eth_NR_Perc,
+  text = ~paste('LA Name:', LA_name),
+  type = 'scatter',
+  mode = 'markers',
+  name = 'White',
+  hoverinfo = 'text+x+y',
+  visible = F
+)
+
+fig
+```
+
+
+```{r}
+
+# Define dropdown buttons for interactivity
+fig <- fig %>% layout(
+  title = "Non-Response Rates Across Local Authorities",
+  xaxis = list(title = "Percentage of Ethnic Group"),
+  yaxis = list(title = "Non-response Rate"),
+  showlegend = FALSE,
+  updatemenus = list(
+    list(
+      type = "dropdown",
+      buttons = list(
+        list(
+          method = "update",
+          args = list(list("visible" = list(TRUE, FALSE)),
+                      list("title" = "Non-Response Rates of the Asian Ethnic Group Across Local Authorities")),
+          label = "Asian"
+        ),
+        list(
+          method = "update",
+          args = list(list("visible" = list(FALSE, TRUE)),
+                      list("title" = "Non-Response Rates of the White Ethnic Group Across Local Authorities")),
+          label = "White"
+        )
+      )
+    )
+  )
+)
+
+# Display the figure
+fig
+```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
