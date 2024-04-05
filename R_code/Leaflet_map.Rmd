@@ -1,0 +1,341 @@
+---
+title: "Interactive Mapping Guide"
+output: html_notebook
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+## Aim
+
+In this notebook we will create an interactive map of the UK which displays the % of Trans men in each local authority.
+There are 331 local authorities in the UK, and we are using data collected in the 2021 UK Census which included 2 new questions on sexuality and gender identity.
+The following data used are:
+
+-   [Gender identity (detailed)](https://www.ons.gov.uk/datasets/TS070/editions/2021/versions/3) - this dataset classifies usual residents aged 16 years and over in England and Wales by gender identity.
+-   [Local Authority District Boundaries](https://geoportal.statistics.gov.uk/datasets/bb53f91cce9e4fd6b661dc0a6c734a3f_0/about) - this file contains the digital vector boundaries for Local Authority Districts in the UK as of May 2022.
+
+## Install packages
+
+If you're running this code on your own PC (and not through the Binder link) then you're going to want to uncomment the lines below so you can install the requisite packages. Another thing to remember is to set your working directory to the correct folder. Otherwise reading in data will be difficult. 
+
+```{r}
+# install.packages("leaflet")
+# install.packages("sf")
+# install.packages("dplyr")
+# install.packages("readr")
+```
+
+## Import libraries
+
+```{r}
+
+# used to read-in datasets
+library(readr)
+# used to manipulate datasets
+library(dplyr)
+# used to read-in spatial data, shapefiles
+library(sf)
+# used to create interactive maps
+library(leaflet)
+
+```
+
+## Read-in dataset
+
+```{r}
+# First, let's read in our gender identity dataset
+
+df <- read_csv('../Data/GI_det.csv')
+
+# Use head function to check out the first few rows - but can also access df via environment pane
+
+head(df, 10)
+```
+
+## Data Cleaning
+
+Before we can calculate the %'s of trans men in each local authority, it's good to do some housekeeping and get our dataframe in order.
+There's a few things that need sorting including:
+
+1.  renaming columns so they are easier to reference
+2.  removing 'Does not apply' from gender identity category
+3.  renaming some values in gender identity category so they aren't as wordy
+
+### Pipe operator - %\>%
+
+The pipe operator is used to pass the result of one function directly into the next one.
+E.g. let's say we had some code:
+
+```{}
+sorted_data \<- my_data %\>% filter(condition) %\>% arrange(sorting_variable)
+```
+
+What we're doing is using the pipe operator to pass my_data to the filter() function, and the result of this is then passed to the arrange() function.
+Basically, pipes allow us to chain together a sequence of functions in a way that's easy to read and understand.
+
+In the code below we use the pipe operator to pass our dataframe to the rename function.
+This basically supplies the rename function with its first argument, which is the dataframe to filter on.
+
+### 1
+
+```{r}
+
+# Rename columns using the rename function from dplyr
+# Specify what you want to rename the column to, and supply the original column string
+
+df <- df %>% 
+  rename(LA_code = `Lower tier local authorities Code`,
+         # backticks ` necessary when names are syntactically invalid, e.g. spaces, special characters etc.
+         LA_name = `Lower tier local authorities`,
+         GI_code = `Gender identity (8 categories) Code`,
+         GI_cat = `Gender identity (8 categories)`)
+
+
+# Let's use the colnames function to see if it worked
+
+colnames(df)
+```
+
+### 2
+
+### Logical operators - ==, !=, \<, \>, \<=, \>=, &, \|, !
+
+Logical operators are used to perform comparisons between values or expressions, which result in a logical (Boolean) value of 'TRUE' or 'FALSE'.
+In the code below we use the '!=
+' 'Does not equal' operator which tests if the GI_cat column in each row of the df does not equal the string 'Does not apply'.
+For each row where GI_cat is not equal to 'Does not apply', the expression valuates to TRUE.
+We filter so we only keep rows where this expression evaluates to TRUE.
+
+```{r}
+
+# To get rid of the 'Does not apply' category in the gender identity category column, we use dplyr's filter function
+# And we use a conditional '!=' to keep everything except 'Does not apply' category
+
+df <- df %>% filter(GI_cat != 'Does not apply')
+
+```
+
+### Dollar sign operator - $
+
+This operator is used to access elements, such as columns of a dataframe, by name.
+Below, we use it to access the gender identity category column, where we want to view the unique values.
+
+```{r}
+# Unique function can be applied to a column in a df to see which values are in that column
+# Let's see if 'Does not apply' has been successfully dropped
+
+unique(df$GI_cat)
+
+```
+
+### 3
+
+```{r}
+# We can use the recode function on a column to replace values in a column
+
+df$GI_cat <- df$GI_cat %>% 
+  recode(`Gender identity the same as sex registered at birth` = "Gender identity the same as sex",
+         `Gender identity different from sex registered at birth but no specific identity given` = "Gender identity different from sex")
+
+
+# Let's see if it worked... 
+
+unique(df$GI_cat)
+```
+
+## Data Pre-processing
+
+Now onto the more interesting stuff.
+The data pre-processing stage involves preparing and transforming data into a suitable format for further analysis.
+It can involve selecting features, transforming variables, and creating new variables.
+For our purposes, we need to create a new column 'Percentages' which contains the % of Trans men in each local authority.
+So, we'll need to first calculate the % of each gender identity category for each local authority.
+Then, we'll want to filter our dataset so that we only keep the responses related to Trans men.
+
+```{r}
+# Use group_by to group the dataframe by the LA_name column
+# Use mutate to perform calculation within each LA_name group, convert result to a % by multiplying by 100
+# round() is used to round %'s to 2 decimal places
+
+df <- df %>%
+  group_by(LA_name) %>%
+  mutate(Percentage = round(Observation / sum(Observation) * 100, 2))
+
+# Let's check out the results
+
+head(df)
+```
+
+```{r}
+# Use filter() to only keep rows where GI_cat equals 'Trans man'
+df <- df %>% 
+  filter(GI_cat == 'Trans man') %>%
+  # Use select() with '-' to remove 'Observation' column
+  select(-Observation) %>% 
+  # Use distinct() to remove duplicate rows
+  distinct() %>% 
+  # Use ungroup() to remove grouping - resetting the dataframes state after performing group operations is good practice
+  ungroup()
+
+# Let's take a look at the results
+head(df)
+```
+
+## Read-in shapefile
+
+Now that we have our gender identity dataset sorted, we can start on the mapping process. And that starts with reading in our shapefile, which we should have downloaded from the geoportal. If (like me) you don't work with spatial data much, you might assume that you only need the shapefile, and you might delete the others that come with the folder. However, a shapefile is not just a single .shp file, but a collection of files that work together, and each of these files plays a crucial role in defining the shapefile's data and behaviour. When you try and read a shapefile into R, the software expects all components to be present, and missing them can lead to errors or incorrect spatial references. E.g. without the .dbf file, you'd lose all attribute data associated with the geographic features, and withou tthe .shx file you might not be able to read the .shp file altogether. 
+
+**TLDR: Make sure when you download the shapefile folder you keep all the files!**
+
+Anyway, let's get started.
+
+```{r}
+# First, read in shapefile to a simple features object
+# st_read() reads in spatial data to a 'simple features' object
+
+sf <- st_read('Shapefiles/LADs/LAD_MAY_2022_UK_BFE_V3.shp')
+
+# Let's check it out 
+head(sf)
+# Better to just view via environment pane
+```
+
+
+```{r}
+# Use dim() to view dimensions of simple feature object
+dim(sf)
+```
+
+```{r}
+# length() with the unique() function gives us the number of unique values in a column
+
+length(unique(sf$LAD22NM))
+```
+
+## Cleaning shapefile
+
+Hmm.We have 331 local authorities in our dataset that we want to plot, but there are 374 listed here.
+We'll need to remove the local authorities that don't match the ones in our df.
+
+1. rename columns to match 'df'
+2. get rid of redundant Local Authorities
+
+### 1
+
+```{r}
+# Use rename function so sf columns match those in original df
+
+sf <- sf %>% 
+  rename(LA_code = LAD22CD, 
+         LA_name = LAD22NM)
+
+# Let's see if it worked
+colnames(sf)
+```
+
+```{r}
+# Replace specific values in the LA_name column using recode()
+
+sf$LA_name <- sf$LA_name %>% 
+  recode(`Bristol, City of` = "Bristol", 
+         `Kingston upon Hull, City of` = "Kingston upon Hull", 
+         `Herefordshire, County of` = "Herefordshire")
+```
+
+### 2
+
+### %in% operator
+
+This is used to check if elements of one list are in another list.
+Much like the logical operators, it returns a boolean value TRUE or FALSE.
+And we only keep rows in the LA_code for the 'sf' dataset, if they are present in the LA_code column in 'df'.
+
+```{r}
+# Use filter() with %in% and unique() to only keep LA's that match 
+
+sf <- sf %>% 
+  filter(LA_code %in% unique(df$LA_code))
+
+# Let's see how it looks.. 
+# We should have 331 unique LA_codes
+length(unique(sf$LA_code))
+```
+
+## Pre-processing shapefile
+
+When it comes to mapping our data, it is important that we know which Coordinate Reference System (CRS) we are working with. Simply put, the CRS is a way to describe how the spatial data in the 'sf' object maps to locations on earth. The CRS is just a way of translating 3D reality into 2D maps. And when it comes to using mapping libraries like 'leaflet', knowing the CRS is important because leaflet expects coordinates in a specific format (usually latitude and longitude), which is EPSG:4326. If our CRS isn't in this format then we might need to transform it so that it matches what leaflet expects. Let's go ahead and see what our CRS is saying. 
+
+```{r}
+# st_crs() shows our CRS info
+st_crs(sf)
+```
+
+
+```{r}
+# To transform our crs to EPSG: 4326, simply use st_transform() and specify the crs
+# Note: you don't have to use the %>% pipe operator all the time
+sf <- st_transform(sf, crs = 4326)
+```
+
+### Merge datasets
+
+What we want to do now is merge our 'df' dataframe with our 'sf' spatial object, so that we can directly access the data and map it!
+When you use the merge function in R, the order in which you place the data matters in terms of the result's class type and spatial attributes. 
+So, in terms of class type, we have a dataframe and a spatial object. By placing 'sf' first, the result will be a spatial object, which is important because this retains the spatial characteristics and geometry columns of the 'sf' object. We merge the columns on the LA_code and LA_name columns which are present in both datasets. 
+
+### 'c' function
+
+Don't overthink it. It's just a way to group items together in R, whether for defining a set of values to work with, specifying parameters for a function, or any number of other uses where a list of items is needed. 
+
+```{r}
+# Merge the dataframes
+merged <- merge(sf, df, by = c('LA_code', 'LA_name'))
+
+# Let's check it out
+head(merged)
+```
+
+## Data Analysis
+
+## Building our interactive map
+
+Finally, we can now build out interactive map using leaflet. You can see from the 'geometry' column that we're working with 'MULTIPOLYGON's' which are a collection of polygons grouped together as a single geometric entity. Basically, multipolygons are good at representing complex shapes. And we have 331 to plot. You can take a look at these separate multipolygons by using the plot function and indexing the row and column (see below). 
+
+```{r}
+plot(sf[1, 'geometry'])
+```
+
+The code below has helpful code comments that should help you grasp what each bit of the code is doing. But, to provide the overall picture, what we have below is 
+
+
+```{r}
+# Define the color palette for filling in our multipolygon shapes
+# domain sets the range of data values that the colour scale should cover
+color_palette <- colorNumeric(palette = "YlGnBu", domain = merged$Percentage)
+
+# Use leaflet function with 'merged' dataset
+uk_map <- leaflet(merged) %>%
+  # Centers the map on long and lat for UK
+  setView(lng = -3.0, lat = 53, zoom = 6) %>%
+  # Adds default map tiles (the visual image of the map)
+  addTiles() %>%
+  # Adds multipolygons to the map, and colours them based on the 'Percentage' column
+  # We use the palette we created above
+  addPolygons(
+    fillColor = ~color_palette(Percentage),
+    weight = 1, # Set the border weight to 1 for thinner borders
+    color = "#000000",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+    label = ~paste(LA_name, ":", Percentage, "%"), # This will create tooltips showing the info
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "12px", direction = "auto") # Adjust text size as needed
+  ) %>%
+  addLegend(pal = color_palette, values = ~Percentage, opacity = 0.7, title = "Percentage", position = "topright")
+
+# Render the map
+uk_map
+```
+
