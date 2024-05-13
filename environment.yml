@@ -3,6 +3,8 @@ channels:
 
 dependencies:
   - r-base==4.1.1
+  - r-irkernel
+  - r-devtools
   - r-readr
   - r-dplyr
   - r-sf
@@ -11,3 +13,7 @@ dependencies:
   - r-shiny
   - r-ggplot2
   - r-plotly
+  - r-knitr
+  - jupyter
+  - nb_conda_kernels
+  - ipykernel
