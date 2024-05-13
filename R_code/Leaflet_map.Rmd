@@ -1,10 +1,14 @@
 ---
-title: "Interactive Mapping Guide"
-output: html_notebook
+title: "Interactive Mapping"
+output: html_document
 editor_options: 
   markdown: 
     wrap: sentence
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+```
 
 ## Guide
 
