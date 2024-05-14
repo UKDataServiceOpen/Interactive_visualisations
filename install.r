@@ -1,14 +1,11 @@
-# Install leaflet for interactive map visualizations
-install.packages("leaflet", dependencies = TRUE)
+# Install regular R packages
+install.packages("readr")
+install.packages("dplyr")
+install.packages("stringr")  # Note: it's 'stringr', not 'string'
+install.packages("ggplot2")
+install.packages("plotly")
+install.packages("leaflet")
+install.packages("sf")
 
-# Install plotly for interactive plotting
-install.packages("plotly", dependencies = TRUE)
-
-# Install sf for handling geographic data
-install.packages("sf", dependencies = TRUE)
-
-# Install ggplot2 for data visualization (if not already handled by conda)
-install.packages("ggplot2", dependencies = TRUE)
-
-# Install ggplot2 for data visualization (if not already handled by conda)
-install.packages("stringr", dependencies = TRUE)
+# You might also need to set repository if automatic CRAN mirrors do not work
+options(repos = c(CRAN = "https://cloud.r-project.org"))

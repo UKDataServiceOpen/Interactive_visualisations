@@ -1,13 +1,7 @@
-name: my-r-environment
-channels:
-  - conda-forge
 dependencies:
-  - r-base=4.4.0
-  - r-irkernel
-  - r-devtools
-  - r-readr
-  - r-dplyr
-  - jupyter
+  - pandas
+  - plotly
+  - geopandas
+  - folium
+  - jupyterlab
   - nb_conda_kernels
-  - ipykernel
-  - r-rlang>=1.0.2
