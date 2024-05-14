@@ -1,20 +1,13 @@
+name: my-r-environment
 channels:
   - conda-forge
-
 dependencies:
-  - r-base==4.1.1
+  - r-base=4.1.1
   - r-irkernel
   - r-devtools
   - r-readr
   - r-dplyr
-  - r-sf
-  - r-leaflet
-  - r-stringr
-  - r-shiny
-  - r-ggplot2
-  - r-plotly
-  - r-knitr
-  - r-rlang>=1.0.2
   - jupyter
   - nb_conda_kernels
   - ipykernel
+  - r-rlang>=1.0.2
