@@ -24,10 +24,10 @@ The following data used are:
 If you're running this code on your own PC (and not through the Binder link) then you're going to want to uncomment the lines below so you can install the requisite packages. Another thing to remember is to set your working directory to the correct folder. Otherwise reading in data will be difficult. 
 
 ```{r}
-# install.packages("leaflet")
-# install.packages("sf")
-# install.packages("dplyr")
-# install.packages("readr")
+ # install.packages("leaflet")
+ # install.packages("sf")
+ # install.packages("dplyr")
+ # install.packages("readr")
 ```
 
 ## Import libraries

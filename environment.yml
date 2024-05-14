@@ -2,7 +2,7 @@ name: my-r-environment
 channels:
   - conda-forge
 dependencies:
-  - r-base=4.1.1
+  - r-base=4.4.0
   - r-irkernel
   - r-devtools
   - r-readr
