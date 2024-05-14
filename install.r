@@ -1,11 +1,10 @@
-# Install regular R packages
-install.packages("readr")
-install.packages("dplyr")
-install.packages("stringr")  # Note: it's 'stringr', not 'string'
-install.packages("ggplot2")
-install.packages("plotly")
-install.packages("leaflet")
-install.packages("sf")
+packages <- c("plotly", "ggplot2", "dplyr", "leaflet", "sf", "readr")
 
-# You might also need to set repository if automatic CRAN mirrors do not work
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+for (pkg in packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+    if (!require(pkg, character.only = TRUE)) {
+      cat(sprintf("Failed to install %s.\n", pkg))
+    }
+  }
+}
