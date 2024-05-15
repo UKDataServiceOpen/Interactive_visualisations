@@ -1,12 +1,43 @@
 name: myenv
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - python=3.8
-  - pandas
-  - plotly
-  - geopandas
-  - folium
   - jupyterlab
-  - nb_conda_kernels
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - scipy
+  - r-base
+  - r-ggplot2
+  - r-dplyr
+  - r-plotly
+  - r-leaflet
+  - r-sf
+  - r-readr
+  - r-raster
+  - r-units
+  - r-terra
+  - r-devtools
+  - r-rcurl
+  - r-httr
+  - r-jsonlite
+  - r-tidyr
+  - r-tidyverse
+  - r-data.table
+  - r-shiny
+  - r-ggmap
+  - r-rmarkdown
+  - r-knitr
+  - r-leaflet
+  - r-sp
+  - r-rgdal
+  - r-lubridate
+  - r-tmap
+  - r-stars
+  - gdal
+  - proj
+  - geos
+  - udunits2

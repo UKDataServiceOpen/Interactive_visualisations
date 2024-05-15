@@ -18,21 +18,21 @@ RUN apt-get update -qq && apt-get install -y \
     libxerces-c-dev \
     && apt-get clean
 
-# Install conda dependencies
-COPY environment.yml /tmp/
-RUN conda env update -f /tmp/environment.yml && conda clean -a
-
-# Switch back to jovyan user
-USER jovyan
-
-# Install R packages
-COPY install.r /tmp/
-RUN Rscript /tmp/install.r
+# Install conda dependencies in a step to reduce memory usage
+COPY environment.yml /tmp/environment.yml
+RUN conda env create -f /tmp/environment.yml && conda clean -a
 
 # Set environment variables for R
 ENV UDUNITS2_INCLUDE=/usr/include/udunits2
 ENV UDUNITS2_LIBS=/usr/lib
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
+
+# Switch back to jovyan user
+USER jovyan
+
+# Install R packages
+COPY install.r /tmp/install.r
+RUN Rscript /tmp/install.r
 
 # Run Jupyter Notebook by default
 CMD ["start-notebook.sh"]
