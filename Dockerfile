@@ -36,7 +36,14 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/lib
 # Switch back to jovyan user
 USER jovyan
 
-# Install R packages
+# Copy directories into the image
+COPY Data /home/jovyan/Data
+COPY Images /home/jovyan/Images
+COPY Python_code /home/jovyan/Python_code
+COPY R_code /home/jovyan/R_code
+COPY Shapefiles /home/jovyan/Shapefiles
+
+# Copy and install R packages
 COPY install.r /tmp/install.r
 RUN Rscript /tmp/install.r
 
