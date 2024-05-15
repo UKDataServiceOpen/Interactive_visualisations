@@ -1,16 +1,17 @@
-# Set CRAN repository
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+# install.r
 
-# Install R packages
-install.packages(c("plotly", "sf", "leaflet", "tmap", "sp"))
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
 
-# Load required packages and install if not already installed
-required_packages <- c("plotly", "sf", "leaflet", "tmap", "sp")
-installed_packages <- rownames(installed.packages())
+# List of packages to install
+packages <- c("plotly", "sf", "leaflet", "units")
 
-for (pkg in required_packages) {
-  if (!(pkg %in% installed_packages)) {
-    install.packages(pkg)
+# Install each package if not already installed
+for (pkg in packages) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
   }
-  library(pkg, character.only = TRUE)
 }
+
+# Ensure all packages are loaded
+lapply(packages, library, character.only = TRUE)
