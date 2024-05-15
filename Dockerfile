@@ -14,7 +14,7 @@ RUN apt-get update -qq && apt-get install -y \
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/conda && \
     rm /tmp/miniconda.sh && \
-    /opt/conda/bin/conda clean -tipsy
+    /opt/conda/bin/conda clean -afy
 
 # Add Conda to PATH
 ENV PATH=/opt/conda/bin:$PATH
