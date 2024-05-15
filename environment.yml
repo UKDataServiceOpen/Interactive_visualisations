@@ -3,41 +3,25 @@ channels:
   - conda-forge
 dependencies:
   - python=3.8
-  - jupyterlab
   - numpy
   - pandas
-  - matplotlib
-  - seaborn
-  - scikit-learn
   - scipy
+  - matplotlib
+  - scikit-learn
+  - jupyterlab
+  - plotly
   - r-base
   - r-ggplot2
   - r-dplyr
-  - r-plotly
-  - r-leaflet
-  - r-sf
-  - r-readr
-  - r-raster
-  - r-units
-  - r-terra
-  - r-devtools
-  - r-rcurl
-  - r-httr
-  - r-jsonlite
   - r-tidyr
-  - r-tidyverse
-  - r-data.table
-  - r-shiny
-  - r-ggmap
-  - r-rmarkdown
-  - r-knitr
+  - r-tibble
+  - r-readr
+  - r-purrr
+  - r-stringr
+  - r-forcats
+  - r-plotly
+  - r-sf
   - r-leaflet
-  - r-sp
-  - r-rgdal
-  - r-lubridate
   - r-tmap
-  - r-stars
-  - gdal
-  - proj
-  - geos
-  - udunits2
+  - r-sp
+  - r-rcpp

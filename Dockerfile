@@ -18,9 +18,12 @@ RUN apt-get update -qq && apt-get install -y \
     libxerces-c-dev \
     && apt-get clean
 
-# Install conda dependencies in a step to reduce memory usage
+# Install mamba and use it for package installation
+RUN conda install -c conda-forge mamba && conda clean -a
+
+# Copy environment file and use mamba to create the environment
 COPY environment.yml /tmp/environment.yml
-RUN conda env create -f /tmp/environment.yml && conda clean -a
+RUN mamba env create -f /tmp/environment.yml && conda clean -a
 
 # Set environment variables for R
 ENV UDUNITS2_INCLUDE=/usr/include/udunits2
