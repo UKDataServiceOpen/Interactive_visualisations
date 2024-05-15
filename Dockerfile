@@ -8,7 +8,19 @@ RUN apt-get update -qq && apt-get install -y \
     libgdal-dev \
     libgeos-dev \
     libproj-dev \
+    libheif-dev \
+    libpoppler-cpp-dev \
+    libjson-c-dev \
+    libfreexl-dev \
+    libqhull-dev \
+    libgeos-c1v5 \
+    libkml-dev \
+    libxerces-c-dev \
     && apt-get clean
+
+# Install conda dependencies
+COPY environment.yml /tmp/
+RUN conda env update -f /tmp/environment.yml && conda clean -a
 
 # Switch back to jovyan user
 USER jovyan
@@ -16,10 +28,6 @@ USER jovyan
 # Install R packages
 COPY install.r /tmp/
 RUN Rscript /tmp/install.r
-
-# Copy environment.yml for Python dependencies
-COPY environment.yml /tmp/
-RUN conda env update -f /tmp/environment.yml && conda clean -a
 
 # Set environment variables for R
 ENV UDUNITS2_INCLUDE=/usr/include/udunits2
