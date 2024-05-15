@@ -25,4 +25,4 @@ dependencies:
   - proj  # System dependency for R sf package
   - geos  # System dependency for R sf package
   - libiconv  # Ensure libiconv is installed for locale support
-  - libudunits2
+  - libudunits2 

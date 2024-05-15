@@ -26,7 +26,7 @@ COPY environment.yml /tmp/environment.yml
 RUN mamba env create -f /tmp/environment.yml && conda clean -a
 
 # Activate the environment and ensure conda environment is used
-ENV PATH /opt/conda/envs/<your_env_name>/bin:$PATH
+ENV PATH /opt/conda/envs/myenv/bin:$PATH
 
 # Set environment variables for R
 ENV UDUNITS2_INCLUDE=/usr/include/udunits2

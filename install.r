@@ -4,7 +4,7 @@
 options(repos = c(CRAN = "https://cloud.r-project.org/"))
 
 # List of packages to install
-packages <- c("plotly", "sf", "leaflet", "units")
+packages <- c("plotly", "sf", "leaflet", "units", "raster", "terra")
 
 # Install each package if not already installed
 for (pkg in packages) {
