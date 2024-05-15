@@ -2,26 +2,27 @@ name: myenv
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.9  # specify the Python version you need
+  - jupyterlab
   - numpy
   - pandas
-  - scipy
   - matplotlib
+  - seaborn
   - scikit-learn
-  - jupyterlab
   - plotly
-  - r-base
+  - r-base  # Include R base to ensure R support
+  - r-irkernel  # R kernel for Jupyter
   - r-ggplot2
   - r-dplyr
   - r-tidyr
-  - r-tibble
   - r-readr
-  - r-purrr
-  - r-stringr
-  - r-forcats
-  - r-plotly
-  - r-sf
+  - r-shiny
   - r-leaflet
-  - r-tmap
-  - r-sp
-  - r-rcpp
+  - r-sf
+  - r-units
+  - r-plotly
+  - gdal  # System dependency for R sf package
+  - proj  # System dependency for R sf package
+  - geos  # System dependency for R sf package
+  - libiconv  # Ensure libiconv is installed for locale support
+  - libudunits2
