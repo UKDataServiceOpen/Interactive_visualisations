@@ -4,5 +4,10 @@
 apt-get update -y
 apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev
 
+# Set environment variables to help R locate the installed libraries
+export UDUNITS2_INCLUDE=$(udunits2-config --includedir)
+export UDUNITS2_LIBS=$(udunits2-config --libdir)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib:/usr/local/lib
+
 # Execute the R script
 Rscript install.r
