@@ -1,7 +1,7 @@
 # Use the Jupyter Docker Stacks image as the base
 FROM jupyter/r-notebook:latest
 
-# Install system dependencies
+# Install system dependencies needed for R packages
 USER root
 RUN apt-get update -qq && apt-get install -y \
     libudunits2-dev \
@@ -18,12 +18,15 @@ RUN apt-get update -qq && apt-get install -y \
     libxerces-c-dev \
     && apt-get clean
 
-# Install mamba and use it for package installation
+# Install mamba for faster package management
 RUN conda install -c conda-forge mamba && conda clean -a
 
-# Copy environment file and use mamba to create the environment
+# Copy environment file and create the conda environment
 COPY environment.yml /tmp/environment.yml
 RUN mamba env create -f /tmp/environment.yml && conda clean -a
+
+# Activate the environment and ensure conda environment is used
+ENV PATH /opt/conda/envs/<your_env_name>/bin:$PATH
 
 # Set environment variables for R
 ENV UDUNITS2_INCLUDE=/usr/include/udunits2
