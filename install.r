@@ -7,7 +7,7 @@ for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
       cat(sprintf("FAILED TO INSTALL %s.\n", pkg))
     } else {
-      print(paste(pkg, "INSTALLED SUCCESFFULLYY"))
+      print(paste(pkg, "INSTALLED SUCCESSFULLY"))
     }
   } else {
     print(paste(pkg, "ALREADY INSTALLED"))
