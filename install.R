@@ -1,1 +1,2 @@
-install.packages(c("readr", "sf", "leaflet", "dplyr","stringr", "ggplot2", "plotly"))
+install.packages(c("readr", "sf", "leaflet", "dplyr","stringr", "ggplot2", "plotly", "IRkernel"))
+IRkernel::installspec()
