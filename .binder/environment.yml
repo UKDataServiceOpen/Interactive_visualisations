@@ -1,6 +1,0 @@
-dependencies:
-  - pandas
-  - plotly
-  - geopandas
-  - folium
-  - pyarrow
