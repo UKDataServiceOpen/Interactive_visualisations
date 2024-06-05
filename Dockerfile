@@ -21,8 +21,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', 'sf', 'IRkernel', 'Cairo', 'rsvg'), dependencies=TRUE, repos='https://cloud.r-project.org/')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
-# Set the working directory to the root of the repository
+# Set the working directory to /workspace
 WORKDIR /home/jovyan/work
+
+# Change ownership and permissions of the /home/jovyan/work directory
+RUN chown -R docker:docker /home/jovyan/work && chmod -R 775 /home/jovyan/work
 
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
@@ -32,7 +35,6 @@ EXPOSE 8888
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
-
 
 
 
