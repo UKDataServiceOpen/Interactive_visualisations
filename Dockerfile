@@ -11,7 +11,7 @@ RUN apt-get update && \
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     /opt/venv/bin/pip install --upgrade pip && \
-    /opt/venv/bin/pip install jupyter ipykernel pyarrow pandas geopandas folium plotly statsmodels && \
+    /opt/venv/bin/pip install jupyterlab ipykernel pyarrow pandas geopandas folium plotly statsmodels && \
     /opt/venv/bin/python -m ipykernel install --name=venv --user
 
 # Ensure the virtual environment is used for subsequent commands
@@ -27,8 +27,8 @@ WORKDIR /workspace
 # Expose the port Jupyter will run on
 EXPOSE 8888
 
-# Set a default command to run Jupyter Notebook with the virtual environment activated
-CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+# Set a default command to run JupyterLab with the virtual environment activated
+CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
 
 
 
