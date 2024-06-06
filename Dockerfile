@@ -7,6 +7,9 @@ RUN apt-get update && \
     python3 python3-pip python3-venv python3-dev \
     libsqlite3-dev build-essential librsvg2-dev libcairo2-dev
 
+# Create jovyan user and home directory
+RUN useradd -m -s /bin/bash jovyan
+
 # Create and activate a virtual environment, then install additional Python packages
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
@@ -32,6 +35,9 @@ COPY . /home/jovyan/work
 
 # Expose the port Jupyter will run on
 EXPOSE 8888
+
+# Switch to jovyan user
+USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
