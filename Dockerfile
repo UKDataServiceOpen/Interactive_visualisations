@@ -25,7 +25,7 @@ RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', '
 WORKDIR /home/jovyan/work
 
 # Change ownership and permissions of the /home/jovyan/work directory
-RUN chown -R docker:docker /home/jovyan/work && chmod -R 775 /home/jovyan/work
+RUN chown -R jovyan:jovyan /home/jovyan/work && chmod -R 775 /home/jovyan/work
 
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
@@ -35,6 +35,3 @@ EXPOSE 8888
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
-
-
-
