@@ -24,11 +24,11 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', 'sf', 'IRkernel', 'Cairo', 'rsvg'), dependencies=TRUE, repos='https://cloud.r-project.org/')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
-# Set the working directory to /workspace
+# Set the working directory to /home/jovyan/work
 WORKDIR /home/jovyan/work
 
-# Change ownership and permissions of the /home/jovyan/work directory
-RUN chown -R jovyan:jovyan /home/jovyan/work && chmod -R 775 /home/jovyan/work
+# Change ownership and permissions of the /home/jovyan directory
+RUN chown -R jovyan:jovyan /home/jovyan && chmod -R 775 /home/jovyan
 
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
