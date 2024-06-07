@@ -27,11 +27,18 @@ RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', '
 # Set the working directory to /home/jovyan/work
 WORKDIR /home/jovyan/work
 
-# Change ownership and permissions of the /home/jovyan directory
-RUN chown -R jovyan:jovyan /home/jovyan && chmod -R 775 /home/jovyan
+# Ensure the directory exists and set permissions
+RUN mkdir -p /home/jovyan/work && \
+    chown -R jovyan:jovyan /home/jovyan && \
+    chmod -R 775 /home/jovyan
 
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
+
+# Check permissions and ownership for debugging
+RUN ls -l /home && \
+    ls -l /home/jovyan && \
+    ls -l /home/jovyan/work
 
 # Expose the port Jupyter will run on
 EXPOSE 8888
