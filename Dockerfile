@@ -5,7 +5,7 @@ FROM r-base:4.4.0
 RUN apt-get update && \
     apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
     python3 python3-pip python3-venv python3-dev \
-    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev
+    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo
 
 # Create jovyan user and home directory
 RUN useradd -m -s /bin/bash jovyan
@@ -27,18 +27,11 @@ RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', '
 # Set the working directory to /home/jovyan/work
 WORKDIR /home/jovyan/work
 
-# Ensure the directory exists and set permissions
-RUN mkdir -p /home/jovyan/work && \
-    chown -R jovyan:jovyan /home/jovyan && \
-    chmod -R 775 /home/jovyan
-
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
 
-# Check permissions and ownership for debugging
-RUN ls -l /home && \
-    ls -l /home/jovyan && \
-    ls -l /home/jovyan/work
+# Change ownership and permissions of the /home/jovyan/work directory
+RUN chown -R jovyan:jovyan /home/jovyan/work && chmod -R 775 /home/jovyan/work
 
 # Expose the port Jupyter will run on
 EXPOSE 8888
@@ -48,3 +41,4 @@ USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+
