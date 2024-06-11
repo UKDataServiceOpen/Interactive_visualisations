@@ -42,6 +42,8 @@ library(dplyr)
 library(sf)
 # used to create interactive maps
 library(leaflet)
+# used to scrape data from websites
+library(httr)
 
 ```
 
@@ -50,7 +52,7 @@ library(leaflet)
 ```{r}
 # First, let's read in our gender identity dataset
 
-df <- read_csv('Data/GI_det.csv')
+df <- read_csv('../Data/GI_det.csv')
 ```
 
 
@@ -195,34 +197,43 @@ Anyway, let's get started.
 ```{r}
 # Download shapefiles from geoportal 
 
-
 # URL for the direct download of the shapefile
 url <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_May_2022_UK_BFE_V3_2022/FeatureServer/replicafilescache/Local_Authority_Districts_May_2022_UK_BFE_V3_2022_3331011932393166417.zip"
 
+# Create a temporary directory
+tmp_dir <- tempdir()
+print(paste("Created temporary directory:", tmp_dir))
 
-# Get the current working directory
-current_dir <- getwd()
+# Set destination file path
+dest_file <- file.path(tmp_dir, "shapefile.zip")
 
-# Construct absolute path
-dest_dir <- file.path(current_dir, "Shapefiles")
-dest_file <- file.path(dest_dir, "shapefile.zip")
+# Download the shapefile
+response <- GET(url, write_disk(dest_file, overwrite = TRUE))
 
+# Check if the download was successful
+if (response$status_code == 200)
+  print("Download successful")
+  
+  # Unzip the file within the temporary directory
+  unzip(dest_file, exdir = tmp_dir)
+  print(paste("Files extracted to:", tmp_dir))
+  
+  # List all files in the temporary directory to verify extraction
+  extracted_files <- list.files(tmp_dir)
+  print("Extracted files:")
+  print(extracted_files)
+  
+  # Define the path to the actual shapefile (.shp)
+  shapefile_path <- file.path(tmp_dir, 'LAD_MAY_2022_UK_BFE_V3.shp')
+  
+  # Read in shapefile to a simple features object
+  # st_read() reads in spatial data to a 'simple features' object
+  sf <- st_read(shapefile_path)
+  print("Shapefile loaded successfully.")
+  
 
-# Download shapefile 
-
-download.file(url = url, destfile = dest_file, mode = "wb")
-
-# Unzip the file within the destination directory
-unzip(dest_file, exdir = dest_dir)
 ```
 
-
-```{r}
-# Read in shapefile to a simple features object
-# st_read() reads in spatial data to a 'simple features' object
-
-sf <- st_read("Shapefiles/LAD_MAY_2022_UK_BFE_V3.shp")
-```
 
 
 ```{r}
@@ -379,4 +390,3 @@ uk_map <- leaflet(merged) %>%
 uk_map
 ```
 
-## Host map remotely

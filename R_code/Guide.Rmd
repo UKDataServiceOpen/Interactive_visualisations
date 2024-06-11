@@ -59,7 +59,7 @@ The first dataset that we'll be focusing on is a really simple dataset which sho
 ```{r}
 # Load in dataset
 
-df <- read_csv('Data/GI_det_EW.csv')
+df <- read_csv('../Data/GI_det_EW.csv')
 ```
 ```{r}
 # Brief glimpse of data structure
@@ -258,7 +258,7 @@ This dataset classifies residents by gender identity and age, with the unit of a
 ```{r}
 # Load in dataset 
 
-df2 <- read_csv('Data/GI_age.csv')
+df2 <- read_csv('../Data/GI_age.csv')
 ```
 
 
@@ -454,7 +454,7 @@ This dataset classifies residents by gender identity and ethnic group, with the 
 ```{r}
 # Load in dataset
 
-df3 <- read_csv('Data/GI_ethnic.csv')
+df3 <- read_csv('../Data/GI_ethnic.csv')
 ```
 
 
@@ -819,7 +819,7 @@ This dataset includes sexual identity estimates by gender from 2010 to 2014. Thi
 ```{r}
 # Load in dataset
 
-df3 <- read_csv('Data/cleaned_sexuality_df.csv')
+df3 <- read_csv('../Data/cleaned_sexuality_df.csv')
 ```
 
 ```{r}
