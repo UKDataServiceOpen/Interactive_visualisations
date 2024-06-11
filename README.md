@@ -1,4 +1,7 @@
 # Interactive visualisations
+
+**CODE YOUR OWN INTERACTIVE VISUALISATIONS!** 
+
 This repository holds materials for the Interactive Visualisation workshop. 
 It contains both **Python code** (written in Jupyter notebook), and **R code** (written in RStudio and converted to .ipynb for purposes of running it in the interactive Binder environment). But if you'd rather clone the repo and execute the code in your own computational environment, please do so, as we also have R code notebooks available as R markdown files. 
 
