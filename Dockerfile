@@ -3,9 +3,15 @@ FROM r-base:4.4.0
 
 # Install system libraries required by the 'sf' package and other dependencies
 RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
+    apt-get update && \
     apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
     python3 python3-pip python3-venv python3-dev \
-    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo
+    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo \
+    && apt-get install -f -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create jovyan user and home directory
 RUN useradd -m -s /bin/bash jovyan
@@ -41,4 +47,3 @@ USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
-
