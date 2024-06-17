@@ -1,19 +1,17 @@
 # Use the official R-base image as the base image
 FROM r-base:4.4.0
 
-# Install system libraries required by the 'sf' package and other dependencies
+# Install system libraries required by the 'sf' package and other dependencies using aptitude
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
+    apt-get install -y aptitude software-properties-common && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
     apt-get update && \
-    apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    libglib2.0-0=2.80.2-2 \
-    libglib2.0-bin=2.80.2-2 \
-    gir1.2-glib-2.0=2.80.2-2 && \
+    aptitude install -y libglib2.0-0=2.80.2-2 && \
+    aptitude install -y libglib2.0-bin=2.80.2-2 && \
+    aptitude install -y gir1.2-glib-2.0=2.80.2-2 && \
     apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
     python3 python3-pip python3-venv python3-dev \
-    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo \
-    && apt-get install -f -y && \
+    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
