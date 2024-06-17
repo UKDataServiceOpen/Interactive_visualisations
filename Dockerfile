@@ -6,6 +6,8 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
     apt-get update && \
+    apt-get install -y \
+    libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 && \
     apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
     python3 python3-pip python3-venv python3-dev \
     libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo \
