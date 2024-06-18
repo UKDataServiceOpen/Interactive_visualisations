@@ -8,10 +8,12 @@ RUN apt-get update && \
     apt-get update && \
     aptitude install -y libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 gir1.2-glib-2.0=2.80.2-2 || \
     (apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 gir1.2-glib-2.0=2.80.2-2 && apt-get install -f -y) && \
-    apt-get install -y python3 python3-pip python3-venv python3-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 gir1.2-glib-2.0=2.80.2-2 && apt-get install -f -y)
+
+# Install Python 3 and necessary libraries
+RUN apt-get install -y python3 python3-pip python3-venv python3-dev && \
+    apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
+    libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo
 
 # Create jovyan user and home directory
 RUN useradd -m -s /bin/bash jovyan
@@ -30,6 +32,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', 'sf', 'IRkernel', 'Cairo', 'rsvg'), dependencies=TRUE, repos='https://cloud.r-project.org/')" && \
     R -e "IRkernel::installspec(user = FALSE)"
 
+# Clean up package lists to reduce image size
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set the working directory to /home/jovyan/work
 WORKDIR /home/jovyan/work
 
@@ -47,3 +53,4 @@ USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+
