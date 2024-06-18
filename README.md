@@ -10,7 +10,7 @@ Each respective code folder contains a **general guide** to creating interactive
 
 To access and run the code files interactively, click the button below:
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UKDataServiceOpen/Interactive_vis/HEAD)](https://mybinder.org/v2/gh/UKDataServiceOpen/Interactive_visualisations/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UKDataServiceOpen/Interactive_visualisations/HEAD)
 
 
 Preview the visualisations we'll be coding by visiting our GitHub page: 
