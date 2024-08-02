@@ -8,9 +8,7 @@ RUN apt-get update && \
     gpg --export --armor B8F25A8A73EACF41 | tee /etc/apt/trusted.gpg.d/cran_debian_key.asc && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
     apt-get update && \
-    aptitude install -y libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 gir1.2-glib-2.0=2.80.2-2 || \
-    (apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    libglib2.0-0=2.80.2-2 libglib2.0-bin=2.80.2-2 gir1.2-glib-2.0=2.80.2-2 && apt-get install -f -y)
+    apt-get install -y libglib2.0-0 libglib2.0-bin gir1.2-girepository-2.0
 
 # Install Python 3 and necessary libraries
 RUN apt-get install -y python3 python3-pip python3-venv python3-dev && \
@@ -55,5 +53,6 @@ USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+
 
 
