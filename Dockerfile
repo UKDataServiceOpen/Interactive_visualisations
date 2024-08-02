@@ -1,20 +1,24 @@
 # Use the official R-base image as the base image
 FROM r-base:4.4.0
 
-# Install system libraries required by the 'sf' package and other dependencies using aptitude
+# Add the R Project repository key and repository
 RUN apt-get update && \
-    apt-get install -y gnupg2 aptitude software-properties-common && \
+    apt-get install -y gnupg2 software-properties-common && \
     gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B8F25A8A73EACF41 && \
     gpg --export --armor B8F25A8A73EACF41 | tee /etc/apt/trusted.gpg.d/cran_debian_key.asc && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
-    apt-get update && \
-    apt-get install -y -t testing libglib2.0-0 libglib2.0-bin gir1.2-girepository-2.0 || \
-    (apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    libglib2.0-0 libglib2.0-bin gir1.2-girepository-2.0 && apt-get install -f -y)
+    apt-get update
+
+# Install specific versions of the required packages
+RUN apt-get install -y \
+    libglib2.0-0=2.80.4-1 \
+    libglib2.0-bin=2.80.4-1 \
+    gir1.2-girepository-2.0=1.80.1-3+b1
 
 # Install Python 3 and necessary libraries
-RUN apt-get install -y python3 python3-pip python3-venv python3-dev && \
-    apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
+RUN apt-get install -y \
+    python3 python3-pip python3-venv python3-dev \
+    libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
     libsqlite3-dev build-essential librsvg2-dev libcairo2-dev sudo
 
 # Create jovyan user and home directory
@@ -55,5 +59,6 @@ USER jovyan
 
 # Set a default command to run JupyterLab with the virtual environment activated
 CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+
 
 
