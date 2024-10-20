@@ -7,18 +7,23 @@ output: html_notebook
 
 # Guide to Interactive Visualisations
 
-In this guide, you'll be shown how to make 4 key interactive visualisations, which include: 
+In this guide, you'll be shown how to make 3 key types of interactive visualisations, which include:
 
-* Basic bar chart
-* Grouped bar chart
-* Stacked bar chart
-* Scatterplot
+* Basic bar chart + group and stacked 
 * Scatterplot + dropdown menu
 * Line graph
 
 To create these visualisations, we'll be using the **'plotly'** package. 
 
-Datasets used in this workshop are from the 2021 UK census, and involve the new voluntary question which focuses on gender identity. In particular, we explore the relationship between age and gender ethnicity, as well as ethnicity and gender identity. 
+# Census Data
+
+Datasets used in this workshop are from the 2021 census, and involve the new voluntary question which focuses on gender identity. In particular, we explore the relationship between age and gender identity, as well as ethnicity and gender identity.
+
+**However, please note:**
+
+The Office for Statistics Regulation confirmed on 12/09/2024 that the gender identity estimates from Census 2021 in England and Wales are no longer 'accredited official statistics' and are **now classified as 'official statistics in development'**. For further information, please see: [Sexual orientation and gender identity quality information for Census 2021.](https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/sexuality/methodologies/sexualorientationandgenderidentityqualityinformationforcensus2021) 
+
+# Let's begin...
 
 Let's get started by importing the necessary packages.
 
@@ -151,18 +156,11 @@ df$gender_identity <- factor(df$gender_identity, levels = c(
 ))
 ```
 
-## Question
-
-How is gender identity represented across England and Wales?
-
-Some subquestions that this can help us answer:
-
-* Which gender identity category is most prevalent?
-* Which gender identity is the least prevalent?
 
 ## Data pre-processing
 
 Before we can plot our data, we need to calculate the percentage of each gender identity category. 
+
 The mutate() function adds a new column 'percentage' to df, and applies the following calculation to each row.
 
 ```{r}
@@ -235,6 +233,8 @@ new_fig <- plot_ly(data = df, x = ~gender_identity, y = ~percentage, type = 'bar
                hoverinfo = 'text',
                marker = list(color = 'rgb(158,202,225)', line = list(color = 'rgb(8,48,107)', width = 1.5)),
                width = 800, height = 600)
+
+
 
 # Apply a log scale to the y-axis
 new_fig <- layout(new_fig,
@@ -938,6 +938,6 @@ I'm going to provide you first with a really simple way to host Plotly graphs sp
 
 1. Use Plotly's ['Chart Studio'](https://chart-studio.plotly.com/). You can upload your visualisations directly from your coding environment and then get a link to share them online. You'll need to sign up for an account but it's free, unless you want to share the link privately then you'll need to upgrade your account. Otherwise, for data that's fine being out in the open, this is a good option.
 
-2. Embed your graphs in GitHub pages.
+2. Embed your graphs in GitHub pages. Embed your graphs in GitHub pages. I'm not going to go into this fully, but if you're interested in doing something like this I recommend looking at GitHub's tutorial: https://pages.github.com/. This is what I used to create a GitHub pages for the UKDS which now acts as a lil website where we can show off cool projects like this one! Might be something to consider if you're a researcher looking to show off your work.
 
 
