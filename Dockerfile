@@ -9,9 +9,8 @@ RUN apt-get update && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
     apt-get update
 
-# Install the required packages without version pinning
+# Install necessary packages without libglib2.0-0
 RUN apt-get install -y \
-    libglib2.0-0 \
     libglib2.0-bin \
     gir1.2-girepository-2.0
 
