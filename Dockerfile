@@ -47,6 +47,9 @@ WORKDIR /home/jovyan/work
 # Copy all contents of the repository into the working directory
 COPY . /home/jovyan/work
 
+# Debug step: List contents of /home/jovyan/work
+RUN ls -la /home/jovyan/work
+
 # Change ownership and permissions of the /home/jovyan/work directory
 RUN chown -R jovyan:jovyan /home/jovyan/work && chmod -R 775 /home/jovyan/work
 
@@ -56,8 +59,9 @@ EXPOSE 8888
 # Switch to jovyan user
 USER jovyan
 
-# Set a default command to run JupyterLab with the virtual environment activated
-CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root"]
+# Debug: Run Jupyter in debug mode for verbose output
+CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --debug"]
+
 
 
 
