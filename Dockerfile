@@ -9,11 +9,11 @@ RUN apt-get update && \
     add-apt-repository 'deb http://cloud.r-project.org/bin/linux/debian buster-cran40/' && \
     apt-get update
 
-# Install specific versions of the required packages
+# Install the required packages without version pinning
 RUN apt-get install -y \
-    libglib2.0-0=2.80.4-1 \
-    libglib2.0-bin=2.80.4-1 \
-    gir1.2-girepository-2.0=1.80.1-3+b1
+    libglib2.0-0 \
+    libglib2.0-bin \
+    gir1.2-girepository-2.0
 
 # Install Python 3 and necessary libraries
 RUN apt-get install -y \
