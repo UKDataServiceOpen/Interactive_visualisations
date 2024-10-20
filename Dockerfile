@@ -41,17 +41,17 @@ RUN R -e "install.packages(c('leaflet', 'readr', 'dplyr', 'ggplot2', 'plotly', '
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Set the working directory to /home/jovyan/work
-WORKDIR /home/jovyan/work
+# Set the working directory to /home/jovyan (default for Binder)
+WORKDIR /home/jovyan
 
 # Copy all contents of the repository into the working directory
-COPY . /home/jovyan/work
+COPY . /home/jovyan
 
-# Debug step: List contents of /home/jovyan/work
-RUN ls -la /home/jovyan/work
+# Debug step: List contents of /home/jovyan
+RUN ls -la /home/jovyan
 
-# Change ownership and permissions of the /home/jovyan/work directory
-RUN chown -R jovyan:jovyan /home/jovyan/work && chmod -R 775 /home/jovyan/work
+# Change ownership and permissions of the /home/jovyan directory
+RUN chown -R jovyan:jovyan /home/jovyan && chmod -R 775 /home/jovyan
 
 # Expose the port Jupyter will run on
 EXPOSE 8888
@@ -59,8 +59,8 @@ EXPOSE 8888
 # Switch to jovyan user
 USER jovyan
 
-# Debug: Run Jupyter in debug mode for verbose output
-CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --debug"]
+# Set a default command to run JupyterLab with the virtual environment activated
+CMD ["/bin/bash", "-c", ". /opt/venv/bin/activate && exec jupyter lab --ip=0.0.0.0 --port=8888 --notebook-dir=/home/jovyan --no-browser --allow-root"]
 
 
 
