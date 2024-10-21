@@ -3,7 +3,7 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-![UKDS logo](/Users/loucap/Documents/GitWork/Interactive_vis_new/Images/ukds.png)
+![UKDS logo](/Users/loucap/Documents/GitWork/fresh_repo/Images/ukds.png)
 
 # Guide to Interactive Visualisations
 
@@ -38,7 +38,6 @@ Uncomment the lines below to install the packages if you're not working in Binde
 # install.packages("dplyr")
 # install.packages("stringr")
 # install.packages("shiny")
-# install.packages("ggplot2")
 # install.packages("plotly")
 ```
 
@@ -51,8 +50,6 @@ library(readr)
 library(dplyr) 
 # For regular expression operations 
 library(stringr) 
-# library(shiny)
-library(ggplot2)
 # Used tp create interactive visualisations
 library(plotly)
 ```
@@ -66,16 +63,15 @@ The first dataset that we'll be focusing on is a really simple dataset which sho
 
 df <- read_csv('../Data/GI_det_EW.csv')
 ```
+* chr - stands for "character" and represents text data. Columns with 'chr' contain strings, meaning any kind of text or combination of letters, numbers, or symbols that are treated as text e.g. "hello" or "123abc" would be of type 'chr'
+* dbl - stands for "double" and refers to double-precision floating-point numbers. I.e., it represents numerical data with decimal points e.g. 3.14, 0.001, 29393.
+
 ```{r}
 # Brief glimpse of data structure
 # But can also click on the dataset in the Environment pane
 head(df, 10)
 ```
 
-```{r}
-# Let's check out the dimensions
-dim(df)
-```
 
 ## Data cleaning
 
@@ -112,7 +108,7 @@ This operator is used to access elements, such as columns of a dataframe, by nam
 Below, we use it to access the gender identity code column, where we want to view the unique values.
 
 ```{r}
-# Get rid of columns that do not apply
+# Get rid of redundant categories
 df <- df %>% 
   filter(gender_identity_code != -8) 
 
@@ -145,6 +141,7 @@ unique(df$gender_identity)
 ```{r}
 # We use factor to convert gender_identity column to a factor with specified levels 
 # This tells Plotly the exact order in which to display categories
+# Otherwise, R plots categorical data in alphabetical order.. 
 
 df$gender_identity <- factor(df$gender_identity, levels = c(
   "Cisgender",
@@ -156,6 +153,10 @@ df$gender_identity <- factor(df$gender_identity, levels = c(
 ))
 ```
 
+```{r}
+class(df$gender_identity)
+
+```
 
 ## Data pre-processing
 
@@ -224,8 +225,7 @@ To do this it's quite easy. We use the text and hoverinfo parameter in the plot_
 ```{r}
 new_fig <- plot_ly(data = df, x = ~gender_identity, y = ~percentage, type = 'bar',
                    # ~paste  combines multiple pieces of text and data into one string
-               hovertext = ~paste("Gender: ", gender_identity, 
-                                  #<br> is HTML code for a line break
+               hovertext = ~paste(#<br> is HTML code for a line break
                                   # sprintf - used to format strings
                              "<br>Percentage: ", sprintf("%.2f%%", percentage), 
                              "<br>Observations: ", observation),
@@ -298,13 +298,13 @@ colnames(df2)
 ```
 
 ```{r}
-# Get rid of columns that do not apply
+# Get rid of values that do not apply
 df2 <- df2 %>% 
   filter(gender_identity_code != -8) 
 
 # Use unique and access column to output its unique values
 
-unique(df2$gender_identity_code)
+unique(df2$age_code)
 ```
 
 ```{r}
@@ -331,7 +331,7 @@ df2$age <- df2$age %>%
 # Then, we pipe the output to the head function.
 df2 %>%
   select(age) %>%
-  head()
+  head(5)
 ```
 
 ```{r}
@@ -396,8 +396,7 @@ head(df2)
 ## Interactive grouped bar chart
 
 When creating grouped bar charts, there's a few subtle differences that you'll need to account for in the code.
-First, we'll need to make sure this is a grouped bar chart, which we can set with the 'barmode' parameter.
-Second, we'll need a way to colour each bar in each group, according to age categories, which we can do with the 'color' and 'colors' parameters.
+We'll need a way to colour each bar in each group, according to age categories, which we can do with the 'color' and 'colors' parameters.
 
 ```{r}
 # Create a grouped bar chart with hover information
@@ -602,7 +601,7 @@ head(non_response_totals)
 
 
 ```{r}
-# Merge the tethnic group totals with the ethnic group non-response totals
+# Merge the ethnic group totals with the ethnic group non-response totals
 # c - used when we're referencing more than one column
 # all.x - performs a left join
 grp_nr <- merge(ethnic_totals, non_response_totals, by = c("LA_name", "ethnic_group"), all.x = TRUE)
@@ -750,8 +749,10 @@ fig4 <- fig4 %>% add_trace(
   mode = 'markers',
   name = 'Asian',
   hoverinfo = 'text',
+  # visible parameter sets initial visibility of each trace when plot is first rendered
   visible = T
 )
+
 
 # Add trace for the White ethnic group
 fig4 <- fig4 %>% add_trace(
@@ -771,7 +772,7 @@ fig4 <- fig4 %>% add_trace(
 fig4
 ```
 
-### Step 2: Configure dropdown buttons and set initial visibility of datasets
+### Step 2: Configure dropdown buttons and implement update method
 
 ```{r}
 
@@ -791,6 +792,7 @@ fig4 <- fig4 %>% layout(
           # the update method changes plot attributes when a button is clicked
           method = "update",
           # First button makes Asian data visible and hides the White data
+          # Used to dynamically update the visibility of the traces based on user interaction 
           args = list(list("visible" = list(TRUE, FALSE)),
                       # Update the title specific to the Asian data
                       list("title" = "Non-Response Rates of the Asian Ethnic Group Across Local Authorities")),
