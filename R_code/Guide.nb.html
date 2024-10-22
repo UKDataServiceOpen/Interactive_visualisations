@@ -1810,59 +1810,16 @@ working in Binder.</p>
 <h2>Load in packages</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBBbGxvd3MgdXMgdG8gcmVhZC1pbiBjc3YgZmlsZXNcbmxpYnJhcnkocmVhZHIpIFxuIyBGb3IgZGF0YSBtYW5pcHVsYXRpb25cbmxpYnJhcnkoZHBseXIpIFxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBBbGxvd3MgdXMgdG8gcmVhZC1pbiBjc3YgZmlsZXNcbmxpYnJhcnkocmVhZHIpIFxuIyBGb3IgZGF0YSBtYW5pcHVsYXRpb25cbmxpYnJhcnkoZHBseXIpIFxuIyBGb3IgcmVndWxhciBleHByZXNzaW9uIG9wZXJhdGlvbnMgXG5saWJyYXJ5KHN0cmluZ3IpIFxuIyBVc2VkIHRwIGNyZWF0ZSBpbnRlcmFjdGl2ZSB2aXN1YWxpc2F0aW9uc1xubGlicmFyeShwbG90bHkpXG5gYGAifQ== -->
 <pre class="r"><code># Allows us to read-in csv files
 library(readr) 
 # For data manipulation
-library(dplyr) </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZHBseXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
-<pre><code>
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBGb3IgcmVndWxhciBleHByZXNzaW9uIG9wZXJhdGlvbnMgXG5saWJyYXJ5KHN0cmluZ3IpIFxuIyBsaWJyYXJ5KHNoaW55KVxubGlicmFyeShnZ3Bsb3QyKVxuIyBVc2VkIHRwIGNyZWF0ZSBpbnRlcmFjdGl2ZSB2aXN1YWxpc2F0aW9uc1xubGlicmFyeShwbG90bHkpXG5gYGAifQ== -->
-<pre class="r"><code># For regular expression operations 
+library(dplyr) 
+# For regular expression operations 
 library(stringr) 
-# library(shiny)
-library(ggplot2)
 # Used tp create interactive visualisations
 library(plotly)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5SZWdpc3RlcmVkIFMzIG1ldGhvZHMgb3ZlcndyaXR0ZW4gYnkgJ2h0bWx0b29scyc6XG4gIG1ldGhvZCAgICAgICAgICAgICAgIGZyb20gICAgICAgICBcbiAgcHJpbnQuaHRtbCAgICAgICAgICAgdG9vbHM6cnN0dWRpb1xuICBwcmludC5zaGlueS50YWcgICAgICB0b29sczpyc3R1ZGlvXG4gIHByaW50LnNoaW55LnRhZy5saXN0IHRvb2xzOnJzdHVkaW9cblJlZ2lzdGVyZWQgUzMgbWV0aG9kIG92ZXJ3cml0dGVuIGJ5ICdodG1sd2lkZ2V0cyc6XG4gIG1ldGhvZCAgICAgICAgICAgZnJvbSAgICAgICAgIFxuICBwcmludC5odG1sd2lkZ2V0IHRvb2xzOnJzdHVkaW9cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHBsb3RseeKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmdncGxvdDLigJk6XG5cbiAgICBsYXN0X3Bsb3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzdGF0c+KAmTpcblxuICAgIGZpbHRlclxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmdyYXBoaWNz4oCZOlxuXG4gICAgbGF5b3V0XG4ifQ== -->
-<pre><code>Registered S3 method overwritten by &#39;data.table&#39;:
-  method           from
-  print.data.table     
-Registered S3 methods overwritten by &#39;htmltools&#39;:
-  method               from         
-  print.html           tools:rstudio
-  print.shiny.tag      tools:rstudio
-  print.shiny.tag.list tools:rstudio
-Registered S3 method overwritten by &#39;htmlwidgets&#39;:
-  method           from         
-  print.htmlwidget tools:rstudio
-
-Attaching package: ‘plotly’
-
-The following object is masked from ‘package:ggplot2’:
-
-    last_plot
-
-The following object is masked from ‘package:stats’:
-
-    filter
-
-The following object is masked from ‘package:graphics’:
-
-    layout</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1884,16 +1841,6 @@ bar.</p>
 
 df &lt;- read_csv(&#39;../Data/GI_det_EW.csv&#39;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogOCBDb2x1bW5zOiA1XG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLFwiXG5jaHIgKDMpOiBFbmdsYW5kIGFuZCBXYWxlcyBDb2RlLCBFbmdsYW5kIGFuZCBXYWxlcywgR2VuZGVyIGlkZW50aXR5ICg4IGNhdGVnb3JpZXMpXG5kYmwgKDIpOiBHZW5kZXIgaWRlbnRpdHkgKDggY2F0ZWdvcmllcykgQ29kZSwgT2JzZXJ2YXRpb25cblxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
-<pre><code>Rows: 8 Columns: 5
-── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Delimiter: &quot;,&quot;
-chr (3): England and Wales Code, England and Wales, Gender identity (8 categories)
-dbl (2): Gender identity (8 categories) Code, Observation
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <ul>
@@ -1912,13 +1859,6 @@ points e.g. 3.14, 0.001, 29393.</li>
 # But can also click on the dataset in the Environment pane
 head(df, 10)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6OCwibmNvbCI6NSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI4IMOXIDUiXX19LCJyZGYiOiJINHNJQUFBQUFBQUFBOVZVVFcvVE1CajJ1cWEwZ1kwaEVFSUNJVXRjNE5CcXFCd21oRVFyeGpnZ0RRbHRZa2VjNUUxcUxYMGQyVzY3M2JodzQwZHdRUHNSblBZWCtBR2N1WExrZ0Zic3hHWnRFSEJFV0hJZTUzbnpPTS83NU9QbDlrRS9QQWdKSWF1azJUVEh3Q3hKc0wrMzA5MGlwTmt3Snl1a1NUb1dqMHo1cXEyYXVXRm0yeFU2enpjZmJOcHgvMThSeTM2dVBNVXNaNWhRTzEreEhOVC9WaUJrM2ZaelNrazVIbit0Y0VBY3RoMXVPTHptOEliRFc4U1B4VnpXdHdVb2lrSlRWaFQ1c1dQN3p3QVRrSlFuZ0pyclk2cEhRQlViQTJXS0tqaWlFakt1TkVnd0RqV051TlFqSjkydlN4T2VwdVpDMURTVll2dzdOWTBtMnRpZ3FvQ1lwencrMTJkOEN1ZzJ2N2duR1NvNkUyUG1xVTVGblJQaHJzQnV4SkZKMzgzTllaNVRZVnFRTkZzeXgzL21mV25YSm9CcVprMzVxSDFldzdjZlB0b1VCOTlQeTlBSFh4NitxZkRrZFltZjM1VlBZZkRwcE9TSE80L2VsNHZsYnlWQUU2QnkrUWVPdlA3TGc2WlBSQUovZXovdTFGTyt1MFZqcGlFVDBqUjFiM0dQMjMrKzFDZjdJbElncDB4emdUWGZIU2xtUGU5OXpjeUdiVzQrbjMrck54am5UUGtHUFJrbVRMTmVLbzNlbkozVkpCZEVZZTlvUkEzN0YyblZ4Q3V5Umx5ZW9IV1NkT1BSQkErNy9WcDV0Y0RNM3JPa3FySG0xdTJGZFZDNWFNeWR2T1hrTGNDTW93OHV5RmtFdWQ4NWdhbi9aRXdlWlJ5OVFuTFV2ay9EcXA0V21ubEpHSXZjTTJYbjVPd0g3V0NoYjFvRkFBQT0ifQ== -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["England and Wales Code"],"name":[1],"type":["chr"],"align":["left"]},{"label":["England and Wales"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Gender identity (8 categories) Code"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Gender identity (8 categories)"],"name":[4],"type":["chr"],"align":["left"]},{"label":["Observation"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"K04000001","2":"England and Wales","3":"-8","4":"Does not apply","5":"0"},{"1":"K04000001","2":"England and Wales","3":"1","4":"Gender identity the same as sex registered at birth","5":"45389635"},{"1":"K04000001","2":"England and Wales","3":"2","4":"Gender identity different from sex registered at birth but no specific identity given","5":"117775"},{"1":"K04000001","2":"England and Wales","3":"3","4":"Trans woman","5":"47572"},{"1":"K04000001","2":"England and Wales","3":"4","4":"Trans man","5":"48435"},{"1":"K04000001","2":"England and Wales","3":"5","4":"Non-binary","5":"30257"},{"1":"K04000001","2":"England and Wales","3":"6","4":"All other gender identities","5":"18074"},{"1":"K04000001","2":"England and Wales","3":"7","4":"Not answered","5":"2914625"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[8]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="data-cleaning" class="section level2">
@@ -1932,7 +1872,7 @@ order</li>
 </ul>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzdHJfcmVwbGFjZV9hbGwoKSBtZXRob2QgZmluZHMgYWxsIHN1YnN0cmluZ3Mgd2hpY2ggbWF0Y2ggdGhlIHJlZ2V4IGFuZCByZXBsYWNlcyB0aGVtIHdpdGggZW1wdHkgc3RyaW5nXG4jIEZpcnN0LCBsZXQncyByZXBsYWNlIGFueSBicmFja2V0cyB3aXRoIGVtcHR5IHN0cmluZ3NcbmNvbG5hbWVzKGRmKSA8LSBzdHJfcmVwbGFjZV9hbGwoY29sbmFtZXMoZGYpLCBcIlxcXFxzKlxcXFwoW14pXSpcXFxcKVwiLCBcIlwiKVxuXG4jIExvd2VyY2FzZSBjb2x1bW4gdGV4dCBhbmQgcmVwbGFjZSBlbXB0eSBzcGFjZXMgd2l0aCBcIl9cIlxuY29sbmFtZXMoZGYpIDwtIHRvbG93ZXIoY29sbmFtZXMoZGYpKVxuY29sbmFtZXMoZGYpIDwtIHN0cl9yZXBsYWNlX2FsbChjb2xuYW1lcyhkZiksIFwiIFwiLCBcIl9cIilcblxuIyBMZXQncyBzZWUgaWYgaXQgd29ya2VkLi5cbmNvbG5hbWVzKGRmKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBzdHJfcmVwbGFjZV9hbGwoKSBtZXRob2QgZmluZHMgYWxsIHN1YnN0cmluZ3Mgd2hpY2ggbWF0Y2ggdGhlIHJlZ2V4IGFuZCByZXBsYWNlcyB0aGVtIHdpdGggZW1wdHkgc3RyaW5nXG4jIEZpcnN0LCBsZXQncyByZXBsYWNlIGFueSBicmFja2V0cyB3aXRoIGVtcHR5IHN0cmluZ3NcbmNvbG5hbWVzKGRmKSA8LSBzdHJfcmVwbGFjZV9hbGwoY29sbmFtZXMoZGYpLCBcIlxcXFxzKlxcXFwoW14pXSpcXFxcKVwiLCBcIlwiKVxuXG4jIExvd2VyY2FzZSBjb2x1bW4gdGV4dCBhbmQgcmVwbGFjZSBlbXB0eSBzcGFjZXMgd2l0aCBcIl9cIlxuY29sbmFtZXMoZGYpIDwtIHRvbG93ZXIoY29sbmFtZXMoZGYpKVxuY29sbmFtZXMoZGYpIDwtIHN0cl9yZXBsYWNlX2FsbChjb2xuYW1lcyhkZiksIFwiIFwiLCBcIl9cIilcblxuIyBMZXQncyBzZWUgaWYgaXQgd29ya2VkLi5cbmNvbG5hbWVzKGRmKVxuXG5gYGAifQ== -->
 <pre class="r"><code># str_replace_all() method finds all substrings which match the regex and replaces them with empty string
 # First, let&#39;s replace any brackets with empty strings
 colnames(df) &lt;- str_replace_all(colnames(df), &quot;\\s*\\([^)]*\\)&quot;, &quot;&quot;)
@@ -1942,11 +1882,9 @@ colnames(df) &lt;- tolower(colnames(df))
 colnames(df) &lt;- str_replace_all(colnames(df), &quot; &quot;, &quot;_&quot;)
 
 # Let&#39;s see if it worked..
-colnames(df)</code></pre>
+colnames(df)
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZW5nbGFuZF9hbmRfd2FsZXNfY29kZVwiIFwiZW5nbGFuZF9hbmRfd2FsZXNcIiAgICAgIFwiZ2VuZGVyX2lkZW50aXR5X2NvZGVcIiAgIFwiZ2VuZGVyX2lkZW50aXR5XCIgICAgICAgIFwib2JzZXJ2YXRpb25cIiAgICAgICAgICAgXG4ifQ== -->
-<pre><code>[1] &quot;england_and_wales_code&quot; &quot;england_and_wales&quot;      &quot;gender_identity_code&quot;   &quot;gender_identity&quot;        &quot;observation&quot;           </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="pipes-and-other-operators.." class="section level3">
@@ -1971,8 +1909,8 @@ dataframe, by name. Below, we use it to access the gender identity code
 column, where we want to view the unique values.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgcmlkIG9mIGRvIG5vdCBhcHBseVxuZGYgPC0gZGYgJT4lIFxuICBmaWx0ZXIoZ2VuZGVyX2lkZW50aXR5X2NvZGUgIT0gLTgpIFxuXG4jIFVzZSB1bmlxdWUgYW5kIGFjY2VzcyBjb2x1bW4gdG8gb3V0cHV0IGl0cyB1bmlxdWUgdmFsdWVzXG5cbnVuaXF1ZShkZiRnZW5kZXJfaWRlbnRpdHlfY29kZSlcbmBgYCJ9 -->
-<pre class="r"><code># Get rid of do not apply
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgcmlkIG9mIHJlZHVuZGFudCBjYXRlZ29yaWVzXG5kZiA8LSBkZiAlPiUgXG4gIGZpbHRlcihnZW5kZXJfaWRlbnRpdHlfY29kZSAhPSAtOCkgXG5cbiMgVXNlIHVuaXF1ZSBhbmQgYWNjZXNzIGNvbHVtbiB0byBvdXRwdXQgaXRzIHVuaXF1ZSB2YWx1ZXNcblxudW5pcXVlKGRmJGdlbmRlcl9pZGVudGl0eV9jb2RlKVxuYGBgIn0= -->
+<pre class="r"><code># Get rid of redundant categories
 df &lt;- df %&gt;% 
   filter(gender_identity_code != -8) 
 
@@ -1980,9 +1918,6 @@ df &lt;- df %&gt;%
 
 unique(df$gender_identity_code)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEgMiAzIDQgNSA2IDdcbiJ9 -->
-<pre><code>[1] 1 2 3 4 5 6 7</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1992,15 +1927,6 @@ unique(df$gender_identity_code)</code></pre>
 
 unique(df$gender_identity)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiR2VuZGVyIGlkZW50aXR5IHRoZSBzYW1lIGFzIHNleCByZWdpc3RlcmVkIGF0IGJpcnRoXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMl0gXCJHZW5kZXIgaWRlbnRpdHkgZGlmZmVyZW50IGZyb20gc2V4IHJlZ2lzdGVyZWQgYXQgYmlydGggYnV0IG5vIHNwZWNpZmljIGlkZW50aXR5IGdpdmVuXCJcblszXSBcIlRyYW5zIHdvbWFuXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzRdIFwiVHJhbnMgbWFuXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNV0gXCJOb24tYmluYXJ5XCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbls2XSBcIkFsbCBvdGhlciBnZW5kZXIgaWRlbnRpdGllc1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzddIFwiTm90IGFuc3dlcmVkXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4ifQ== -->
-<pre><code>[1] &quot;Gender identity the same as sex registered at birth&quot;                                  
-[2] &quot;Gender identity different from sex registered at birth but no specific identity given&quot;
-[3] &quot;Trans woman&quot;                                                                          
-[4] &quot;Trans man&quot;                                                                            
-[5] &quot;Non-binary&quot;                                                                           
-[6] &quot;All other gender identities&quot;                                                          
-[7] &quot;Not answered&quot;                                                                         </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBVc2UgY29tYm8gb2YgbXV0YXRlIGFuZCByZWNvZGUgdG8gcmVwbGFjZSBtdWx0aXBsZSB2YWx1ZXMgaW4gY29sdW1uXG4jIC5kZWZhdWx0IGVuc3VyZXMgdGhhdCBhbnkgdmFsdWUgbm90IG1hdGNoaW5nIHRob3NlIHNwZWNpZmllZCBhcmUgbGVmdCB1bmNoYW5nZWRcblxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZShnZW5kZXJfaWRlbnRpdHkgPSByZWNvZGUoZ2VuZGVyX2lkZW50aXR5LFxuICAgIFwiR2VuZGVyIGlkZW50aXR5IHRoZSBzYW1lIGFzIHNleCByZWdpc3RlcmVkIGF0IGJpcnRoXCIgPSBcIkNpc2dlbmRlclwiLFxuICAgIFwiR2VuZGVyIGlkZW50aXR5IGRpZmZlcmVudCBmcm9tIHNleCByZWdpc3RlcmVkIGF0IGJpcnRoIGJ1dCBubyBzcGVjaWZpYyBpZGVudGl0eSBnaXZlblwiID0gXCJHZW5kZXIgaWRlbnRpdHkgZGlmZmVyZW50IGZyb20gc2V4XCIsXG4gICAgLmRlZmF1bHQgPSBnZW5kZXJfaWRlbnRpdHkpKVxuYGBgIn0= -->
@@ -2021,18 +1947,14 @@ df &lt;- df %&gt;%
 <pre class="r"><code># Let&#39;s see if it worked...
 unique(df$gender_identity)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQ2lzZ2VuZGVyXCIgICAgICAgICAgICAgICAgICAgICAgICAgIFwiR2VuZGVyIGlkZW50aXR5IGRpZmZlcmVudCBmcm9tIHNleFwiIFwiVHJhbnMgd29tYW5cIiAgICAgICAgICAgICAgICAgICAgICAgXG5bNF0gXCJUcmFucyBtYW5cIiAgICAgICAgICAgICAgICAgICAgICAgICAgXCJOb24tYmluYXJ5XCIgICAgICAgICAgICAgICAgICAgICAgICAgXCJBbGwgb3RoZXIgZ2VuZGVyIGlkZW50aXRpZXNcIiAgICAgICBcbls3XSBcIk5vdCBhbnN3ZXJlZFwiICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
-<pre><code>[1] &quot;Cisgender&quot;                          &quot;Gender identity different from sex&quot; &quot;Trans woman&quot;                       
-[4] &quot;Trans man&quot;                          &quot;Non-binary&quot;                         &quot;All other gender identities&quot;       
-[7] &quot;Not answered&quot;                      </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSB1c2UgZmFjdG9yIHRvIGNvbnZlcnQgZ2VuZGVyX2lkZW50aXR5IGNvbHVtbiB0byBhIGZhY3RvciB3aXRoIHNwZWNpZmllZCBsZXZlbHMgXG4jIFRoaXMgdGVsbHMgUGxvdGx5IHRoZSBleGFjdCBvcmRlciBpbiB3aGljaCB0byBkaXNwbGF5IGNhdGVnb3JpZXNcblxuZGYkZ2VuZGVyX2lkZW50aXR5IDwtIGZhY3RvcihkZiRnZW5kZXJfaWRlbnRpdHksIGxldmVscyA9IGMoXG4gIFwiQ2lzZ2VuZGVyXCIsXG4gIFwiR2VuZGVyIGlkZW50aXR5IGRpZmZlcmVudCBmcm9tIHNleFwiLFxuICBcIlRyYW5zIHdvbWFuXCIsXG4gIFwiVHJhbnMgbWFuXCIsXG4gIFwiQWxsIG90aGVyIGdlbmRlciBpZGVudGl0aWVzXCIsXG4gIFwiTm90IGFuc3dlcmVkXCJcbikpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSB1c2UgZmFjdG9yIHRvIGNvbnZlcnQgZ2VuZGVyX2lkZW50aXR5IGNvbHVtbiB0byBhIGZhY3RvciB3aXRoIHNwZWNpZmllZCBsZXZlbHMgXG4jIFRoaXMgdGVsbHMgUGxvdGx5IHRoZSBleGFjdCBvcmRlciBpbiB3aGljaCB0byBkaXNwbGF5IGNhdGVnb3JpZXNcbiMgT3RoZXJ3aXNlLCBSIHBsb3RzIGNhdGVnb3JpY2FsIGRhdGEgaW4gYWxwaGFiZXRpY2FsIG9yZGVyLi4gXG5cbmRmJGdlbmRlcl9pZGVudGl0eSA8LSBmYWN0b3IoZGYkZ2VuZGVyX2lkZW50aXR5LCBsZXZlbHMgPSBjKFxuICBcIkNpc2dlbmRlclwiLFxuICBcIkdlbmRlciBpZGVudGl0eSBkaWZmZXJlbnQgZnJvbSBzZXhcIixcbiAgXCJUcmFucyB3b21hblwiLFxuICBcIlRyYW5zIG1hblwiLFxuICBcIkFsbCBvdGhlciBnZW5kZXIgaWRlbnRpdGllc1wiLFxuICBcIk5vdCBhbnN3ZXJlZFwiXG4pKVxuYGBgIn0= -->
 <pre class="r"><code># We use factor to convert gender_identity column to a factor with specified levels 
 # This tells Plotly the exact order in which to display categories
+# Otherwise, R plots categorical data in alphabetical order.. 
 
 df$gender_identity &lt;- factor(df$gender_identity, levels = c(
   &quot;Cisgender&quot;,
@@ -2047,12 +1969,10 @@ df$gender_identity &lt;- factor(df$gender_identity, levels = c(
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoZGYkZ2VuZGVyX2lkZW50aXR5KVxuYGBgIn0= -->
-<pre class="r"><code>class(df$gender_identity)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoZGYkZ2VuZGVyX2lkZW50aXR5KVxuXG5gYGAifQ== -->
+<pre class="r"><code>class(df$gender_identity)
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZmFjdG9yXCJcbiJ9 -->
-<pre><code>[1] &quot;factor&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
