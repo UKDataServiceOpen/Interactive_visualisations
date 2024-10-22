@@ -1,0 +1,139 @@
+---
+title: "Line_graph"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+# Allows us to read-in csv files
+library(readr) 
+# For data manipulation
+library(dplyr) 
+# For regular expression operations 
+library(stringr) 
+# Used tp create interactive visualisations
+library(plotly)
+```
+
+# Dataset 3
+
+This dataset includes sexual identity estimates by gender from 2010 to 2014. This is presented at a UK level, and broken down by England, Wales, Scotland and Northern Ireland. I wanted this guide to include a demo of how to make interactive line graphs with gender identity data, but unfortunately given this is only the first year that the ONS has collected this data that was not possible. So I found a dataset from 2015 which involves experimental statistics that have been used in the Integrated Household Survey. For more info, you can check out this [ONS link](https://www.ons.gov.uk/peoplepopulationandcommunity/culturalidentity/sexuality/datasets/sexualidentitybyagegroupbycountry). 
+
+```{r}
+# Load in dataset
+
+df3 <- read_csv('../Data/cleaned_sexuality_df.csv')
+```
+
+```{r}
+# Brief glimpse at underlying data structure
+
+head(df3, 10)
+```
+
+## Data cleaning
+
+When I first found this dataset it was very messy and formatted terribly, so I performed some cleaning on it in a separate jupyter notebook, to save cluttering this one and distracting from the main tutorial. If you'd like to see how I cleaned it up, please see the ['Data_cleaning_sexuality.ipynb'](Data_cleaning_sexuality.ipynb) notebook. 
+
+## Data pre-processing
+
+The only pre-processing we're going to do is subset our data by country, and also create 2 separate datasets for Gender = Men and Gender = Women. I'll explain why this step is needed soon. 
+
+```{r}
+# Filter dataset to focus on England
+england_df <- df3 %>%
+  filter(Country == 'England')
+```
+
+```{r}
+# Let's check it worked.. 
+
+unique(england_df$Country)
+```
+
+```{r}
+# Further filter data for each gender
+
+men <- england_df %>% filter(Gender == "Men")
+women <- england_df %>% filter(Gender == "Women")
+
+# Let's check it worked
+
+unique(men$Gender)
+unique(women$Gender)
+```
+
+
+## Interactive linegraph
+
+Creating a simple line graph in plotly is pretty easy, but where plotly struggles (in R) is in handling facet plots. A facet plot is a type of visualisation that divides data into subplots based on categorical variables. What I'd like to do is create a facet plot of sexuality percentages in England (2010-2014) with individual subplots for our two genders. This is achieved easily in Python due to the plotly.express module, which provides a simple way to create facet plots. Unfortunately, we'll have to go through a bit more of a longwinded route, where we'll manually create our individual plots for each gender, then combine them using the subplot function. Also, plotly.express automatically manages legends to ensure they're unified across facets, but R's plotly requires that we manually sync up these legends. Womp womp. Let's get to it. 
+
+
+
+```{r}
+# Create individual plot for each gender
+
+# Create plots for each gender
+men_plot <- plot_ly(men, 
+                    x = ~Year, 
+                    y = ~Percentage, 
+                    color = ~Sexuality, 
+                    type = 'scatter', 
+                    # mode used to make sure our data points are connected by lines across the years
+                    mode = 'lines+markers', 
+                    hoverinfo = 'text',
+                    text = ~paste("Year:", Year, "<br>Percentage:", Percentage, "<br>Sexuality:", Sexuality),
+                    # legendgroup parameter ensures that data points relating to the same category are synced across plots
+                    legendgroup = ~Sexuality,
+                    # showlegend parameter set to TRUE only for this plot to avoid duplicate legends
+                    showlegend = TRUE) %>%
+  layout(xaxis = list(title = 'Year', tickvals = 2010:2014, ticktext = 2010:2014),
+         yaxis = list(title = 'Percentage'),
+         # Here we add an annotation to the graph to label the first subplot "Men"
+         # Setting xref and yref to 'paper' simply means the annotation won't move if we zoom in or out
+         annotations = list(
+           list(x = 0.5, y = 1.05, text = "Men", showarrow = FALSE, xref='paper', yref='paper')))
+
+
+women_plot <- plot_ly(women, 
+                      x = ~Year, 
+                      y = ~Percentage, 
+                      color = ~Sexuality, 
+                      type = 'scatter', 
+                      mode = 'lines+markers', 
+                      hoverinfo = 'text',
+                      text = ~paste("Year:", Year, "<br>Percentage:", Percentage, "<br>Sexuality:", Sexuality),
+                      legendgroup = ~Sexuality,
+                      showlegend = FALSE) %>%
+  layout(xaxis = list(title = 'Year', tickvals = 2010:2014, ticktext = 2010:2014),
+         yaxis = list(title = 'Percentage'),
+         annotations = list(
+           list(x = 0.5, y = 1.05, text = "Women", showarrow = FALSE, xref='paper', yref='paper')))
+
+# Let's take a look at one of these graphs
+
+women_plot
+```
+
+```{r}
+# Combine individual plots using subplot
+# Within subplot, define number of rows, make sure share same x axes and both axes titles
+fig5 <- subplot(men_plot, women_plot, nrows = 2, shareX = TRUE, titleX = TRUE, titleY = TRUE) %>%
+  layout(
+    title = list(
+      text = 'Sexuality Percentages by Gender in England (2010-2014)', 
+      y = 0.98,  # Move the title higher up
+      x = 0.5,   # Center the title
+      xanchor = "center",
+      yanchor = "top"
+    ),
+    margin = list(t = 100),  # Add space at the top for the title
+    height = 800,
+    width = 1000
+  )
+
+fig5
+```
